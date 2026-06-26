@@ -59,13 +59,23 @@
       }
 
       .section-title {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-tertiary);
-        margin-bottom: 8px;
-        padding-left: 4px;
+        letter-spacing: 0.1em;
+        color: rgba(201, 176, 112, 0.55);
+        margin-bottom: 10px;
+        padding-left: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0.07) 0%, transparent 100%);
       }
 
       .card {
@@ -73,6 +83,7 @@
         border: 1px solid var(--border);
         border-radius: var(--radius);
         overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
       }
 
       .card-item {
@@ -131,7 +142,7 @@
       select:focus,
       textarea:focus {
         border-color: var(--border-focus);
-        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        box-shadow: 0 0 0 3px rgba(201, 176, 112, 0.1);
       }
 
       select {
@@ -196,6 +207,7 @@
       .status-pill.ok {
         border-color: rgba(48, 209, 88, 0.35);
         color: var(--green);
+        background: linear-gradient(135deg, rgba(48, 209, 88, 0.08) 0%, rgba(48, 209, 88, 0.03) 100%);
       }
 
       .status-pill.pending {
@@ -651,6 +663,7 @@
       /* Provider card left-border accent */
       .card.card-provider-india {
         border-left: 3px solid rgba(48, 209, 88, 0.45);
+        background: linear-gradient(135deg, rgba(48, 209, 88, 0.03) 0%, var(--bg-surface) 40%);
       }
 
       .card.card-provider-us {
