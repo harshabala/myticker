@@ -130,7 +130,7 @@ git commit -m "feat: align Settings with MyTicker gold system"
 
 ### Task 4: Final audit and desktop deployment
 
-**Files:** Synchronize `/Users/harshabalakrishnan/Desktop/MyTicker-dev`.
+**Files:** Synchronize `<local-path>
 
 - [ ] **Step 1: Audit popup keyboard/ARIA and theme states.** Check only one popup header action remains, tabs retain valid panels and Arrow/Home/End navigation, gear has an accessible label, and System/Light/Dark plus reduced-motion/transparency remain readable.
 - [ ] **Step 2: Run complete verification.**
@@ -142,11 +142,11 @@ Expected: all fixtures exit 0 and no whitespace errors.
 - [ ] **Step 3: Sync verified source.**
 
 ```bash
-rsync -a --delete --exclude '.git/' --exclude '.worktrees/' --exclude '.claude/' --exclude '.superpowers/' ./ /Users/harshabalakrishnan/Desktop/MyTicker-dev/
+rsync -a --delete --exclude '.git/' --exclude '.worktrees/' --exclude '.claude/' --exclude '.superpowers/' ./ <local-path>
 ```
 
 - [ ] **Step 4: Verify desktop copy.**
 
-Run: `rg -n 'MyTicker|brand-gold|aria-label="Settings"' /Users/harshabalakrishnan/Desktop/MyTicker-dev/popup.html /Users/harshabalakrishnan/Desktop/MyTicker-dev/brand.css`
+Run: `rg -n 'MyTicker|brand-gold|aria-label="Settings"' <local-path> <local-path>
 
 Expected: canonical name, gear label, and shared gold token are present.

@@ -8,13 +8,13 @@ This document confirms that all 14 design quality findings and code issues ident
 
 | File | Status | Action Taken |
 | :--- | :---: | :--- |
-| [`options.html`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/options.html) | ✅ Resolved | Restyled headers to remove uppercase/tracked kickers; varied setup card layouts for asymmetry. Removed `border-left` side-tab accents. |
-| [`popup.html`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/popup.html) | ✅ Resolved | Optimized ghost button and toggle labels text contrast for WCAG AA compliance. Restyled eyebrows to avoid repetitive AI looks. Added typography pairing with `--font-display`. |
-| [`ticker.css`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/ticker.css) | ✅ Resolved | Added hover-pause to marquee strip; added prefers-reduced-motion fallback. |
-| [`popup.js`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/popup.js) | ✅ Resolved | Added custom empty states for empty watchlists/holdings; added tactile click scales to active elements. |
-| [`options.js`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/options.js) | ✅ Resolved | Replaced connection test spinners with skeleton loaders; checked and unified contact button labels. |
-| [`contentScript.js`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/contentScript.js) | ✅ Resolved | Replaced hardcoded z-index with variable `var(--pts-z-index-ticker)`; smoothed vertical margins. |
-| [`motion.css`](file:///Users/harshabalakrishnan/Documents/Projects/MyTicker/motion.css) | ✅ Resolved | Replaced elastic bounce-easing cubic-bezier curve with smooth exponential easing. |
+| [`options.html`](<local-path>) | ✅ Resolved | Restyled headers to remove uppercase/tracked kickers; varied setup card layouts for asymmetry. Removed `border-left` side-tab accents. |
+| [`popup.html`](<local-path>) | ✅ Resolved | Optimized ghost button and toggle labels text contrast for WCAG AA compliance. Restyled eyebrows to avoid repetitive AI looks. Added typography pairing with `--font-display`. |
+| [`ticker.css`](<local-path>) | ✅ Resolved | Added hover-pause to marquee strip; added prefers-reduced-motion fallback. |
+| [`popup.js`](<local-path>) | ✅ Resolved | Added custom empty states for empty watchlists/holdings; added tactile click scales to active elements. |
+| [`options.js`](<local-path>) | ✅ Resolved | Replaced connection test spinners with skeleton loaders; checked and unified contact button labels. |
+| [`contentScript.js`](<local-path>) | ✅ Resolved | Replaced hardcoded z-index with variable `var(--pts-z-index-ticker)`; smoothed vertical margins. |
+| [`motion.css`](<local-path>) | ✅ Resolved | Replaced elastic bounce-easing cubic-bezier curve with smooth exponential easing. |
 
 ---
 
