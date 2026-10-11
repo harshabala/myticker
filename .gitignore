@@ -23,3 +23,11 @@ node_modules/
 .worktrees/
 .brand-preview/
 *.html.bak
+
+# Local packaging / OS junk
+MyTicker.crx
+MyTicker.pem
+*.zip
+.worktrees/
+* 2.*
+.DS_Store

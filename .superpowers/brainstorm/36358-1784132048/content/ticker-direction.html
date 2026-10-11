@@ -1,0 +1,37 @@
+<style>
+  .preview-wrap { padding: 26px; background: #edf0f3; }
+  .browser { overflow: hidden; border: 1px solid #c7cdd4; border-radius: 10px; background: #f9fafb; box-shadow: 0 16px 35px rgba(24, 31, 39, .12); }
+  .chrome { height: 35px; display: flex; align-items: center; gap: 8px; padding: 0 13px; border-bottom: 1px solid #d9dde2; color: #717983; font: 11px system-ui; }
+  .dots { letter-spacing: 2px; color: #acb4bd; }
+  .url { flex: 1; border-radius: 6px; background: #e9edf1; padding: 5px 10px; text-align: center; }
+  .bookmarks { height: 27px; padding: 0 14px; display: flex; align-items: center; gap: 15px; color: #65707d; font: 10px system-ui; border-bottom: 1px solid #d9dde2; }
+  .strip { height: 38px; display: flex; align-items: stretch; overflow: hidden; color: #eaf0f5; font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .brand { display: flex; align-items: center; gap: 7px; padding: 0 13px; font-family: system-ui; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+  .pulse { width: 7px; height: 7px; border-radius: 50%; background: #36d398; box-shadow: 0 0 0 3px rgba(54,211,152,.13); }
+  .item { display: flex; align-items: center; gap: 7px; padding: 0 14px; border-left: 1px solid rgba(255,255,255,.09); white-space: nowrap; }
+  .sym { color: #fff; font-weight: 700; }
+  .price { font-variant-numeric: tabular-nums; }
+  .gain { color: #50e3a4; } .loss { color: #ff7c74; } .muted { color:#a8b1bb; }
+  .page { height: 155px; padding: 25px; color: #2f3742; font: 14px system-ui; }
+  .page h4 { margin: 0 0 8px; font-size: 20px; letter-spacing: -.04em; }.page p { margin:0; color:#72808c; }
+  .option .card-image { background: transparent; }
+  .obsidian { background: #111821; box-shadow: inset 0 -1px rgba(255,255,255,.05); }
+  .paper { background: #f9faf7; color: #1f2933; box-shadow: inset 0 -1px #dfe5df; }.paper .brand,.paper .sym { color:#18232c; }.paper .item { border-left-color:#dce3df; }.paper .price{color:#435260}.paper .muted {color:#78847f}
+  .signal { background: #17261f; box-shadow: inset 3px 0 #36d398; }
+</style>
+<h2>Choose MyTicker’s visual character</h2>
+<p class="subtitle">Each option keeps the live strip in the webpage viewport—the closest placement Chrome extensions allow—while giving “MyTicker” a more deliberate presence.</p>
+<div class="cards">
+  <div class="card" data-choice="obsidian" onclick="toggleSelect(this)">
+    <div class="card-image"><div class="preview-wrap"><div class="browser"><div class="chrome"><span class="dots">● ● ●</span><span class="url">myticker.app</span></div><div class="bookmarks">Markets &nbsp; Portfolio &nbsp; Research</div><div class="strip obsidian"><div class="brand"><span class="pulse"></span>my ticker</div><div class="item"><span class="sym">NVDA</span><span class="price">$143.72</span><span class="gain">+2.31%</span></div><div class="item"><span class="sym">BTC</span><span class="price">$118,456</span><span class="gain">+1.08%</span></div><div class="item"><span class="sym">ETH</span><span class="price">$3,018</span><span class="loss">−0.34%</span></div></div><div class="page"><h4>Research, uninterrupted.</h4><p>The ticker is present, precise and legible.</p></div></div></div></div>
+    <div class="card-body"><h3>Obsidian terminal</h3><p>Cool graphite, restrained emerald gains and tabular numbers. My recommendation: distinctive, calm, and excellent at a 28–38px height.</p></div>
+  </div>
+  <div class="card" data-choice="paper" onclick="toggleSelect(this)">
+    <div class="card-image"><div class="preview-wrap"><div class="browser"><div class="chrome"><span class="dots">● ● ●</span><span class="url">myticker.app</span></div><div class="bookmarks">Markets &nbsp; Portfolio &nbsp; Research</div><div class="strip paper"><div class="brand"><span class="pulse"></span>my ticker</div><div class="item"><span class="sym">NVDA</span><span class="price">$143.72</span><span class="gain">+2.31%</span></div><div class="item"><span class="sym">BTC</span><span class="price">$118,456</span><span class="gain">+1.08%</span></div><div class="item"><span class="sym">ETH</span><span class="price">$3,018</span><span class="loss">−0.34%</span></div></div><div class="page"><h4>Research, uninterrupted.</h4><p>The ticker becomes a quiet editorial utility.</p></div></div></div></div>
+    <div class="card-body"><h3>Paper market tape</h3><p>Bright and editorial, designed to disappear into light browsing. More understated, less ownable.</p></div>
+  </div>
+  <div class="card" data-choice="signal" onclick="toggleSelect(this)">
+    <div class="card-image"><div class="preview-wrap"><div class="browser"><div class="chrome"><span class="dots">● ● ●</span><span class="url">myticker.app</span></div><div class="bookmarks">Markets &nbsp; Portfolio &nbsp; Research</div><div class="strip signal"><div class="brand"><span class="pulse"></span>my ticker</div><div class="item"><span class="sym">NVDA</span><span class="price">$143.72</span><span class="gain">+2.31%</span></div><div class="item"><span class="sym">BTC</span><span class="price">$118,456</span><span class="gain">+1.08%</span></div><div class="item"><span class="sym">ETH</span><span class="price">$3,018</span><span class="loss">−0.34%</span></div></div><div class="page"><h4>Research, uninterrupted.</h4><p>The ticker feels like an active market instrument.</p></div></div></div></div>
+    <div class="card-body"><h3>Signal desk</h3><p>Deep green field and live-status rail. Stronger personality, but more visually assertive on every site.</p></div>
+  </div>
+</div>
