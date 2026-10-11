@@ -175,6 +175,15 @@ Load unpacked from the repo root. Manual E2E: save key → import `test_fixtures
 
 Task checklist: [docs/TASKS.md](docs/TASKS.md) · Privacy: [PRIVACY.md](PRIVACY.md)
 
+### Permissions
+
+| Permission | Why |
+|------------|-----|
+| `storage` | Holdings, settings, the encrypted Finnhub key vault and local-only metrics stay in `chrome.storage` |
+| `alarms` | Schedule price polling (service workers cannot rely on timers) |
+| Host access: `finnhub.io`, `query1.finance.yahoo.com`, `api.coingecko.com`, `data-api.binance.vision` | Fetch quotes from those four providers only |
+| Content script on `<all_urls>` | Render the ticker strip on every page; it does not read page content |
+
 ### Storage / privacy notes
 
 - Canonical API-key vault: `pts_finnhub_vault` in **local** storage (not sync), AES-256-GCM with a random 96-bit IV per encryption, key derived from your unlock code with PBKDF2-SHA-256 (600,000 iterations, random 128-bit salt). Vaults from v0.5.0 (310,000 iterations) are re-encrypted automatically on the next unlock. Only derived unlock material is held in **session** storage (trusted extension pages only; content scripts cannot read it), and it is cleared on browser restart. If that material ever stops matching the vault, the key reads as locked and prices from other providers continue.
