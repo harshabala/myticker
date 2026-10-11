@@ -128,9 +128,9 @@ assert.doesNotMatch(popupHtml, /sun|brightness/i);
 
 ### Task 5: Audit and deploy
 
-**Files:** Synchronize `/Users/harshabalakrishnan/Desktop/MyTicker-dev`.
+**Files:** Synchronize `<local-path>
 
 - [ ] **Step 1: Audit Watchlist, Manual Crypto, Appearance and popup in light/dark/reduced-motion.** Check 24px card padding, 16px stacks, 8px label/control pairing, contained chips/results, saved/dirty reset, focus, and real gear semantics.
 - [ ] **Step 2: Run full verification.** Run `for f in test_fixtures/test_*.mjs; do node "$f"; done && git diff --check`; expected: all fixtures pass.
-- [ ] **Step 3: Sync runtime source.** Run `rsync -a --delete --exclude '.git/' --exclude '.worktrees/' --exclude '.claude/' --exclude '.superpowers/' ./ /Users/harshabalakrishnan/Desktop/MyTicker-dev/`; exclude any user-owned unstaged spec if still present.
-- [ ] **Step 4: Verify desktop source.** Run `rg -n 'form-stack|crypto-selector|data-save-scope|aria-label="Settings"' /Users/harshabalakrishnan/Desktop/MyTicker-dev/options.html /Users/harshabalakrishnan/Desktop/MyTicker-dev/popup.html`; expected: all final contracts present.
+- [ ] **Step 3: Sync runtime source.** Run `rsync -a --delete --exclude '.git/' --exclude '.worktrees/' --exclude '.claude/' --exclude '.superpowers/' ./ <local-path> exclude any user-owned unstaged spec if still present.
+- [ ] **Step 4: Verify desktop source.** Run `rg -n 'form-stack|crypto-selector|data-save-scope|aria-label="Settings"' <local-path> <local-path> expected: all final contracts present.

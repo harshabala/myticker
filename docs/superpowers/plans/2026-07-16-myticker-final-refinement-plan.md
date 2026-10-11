@@ -195,15 +195,15 @@ Use 700 product/metric headings, 600 section headings, 500 labels/metadata, 400 
 
 ### Task 7: Deploy the verified build
 
-**Files:** Synchronize `/Users/harshabalakrishnan/Desktop/MyTicker-dev`.
+**Files:** Synchronize `<local-path>
 
 - [ ] **Step 1: Verify the clean feature worktree.** Run `git status --short && for f in test_fixtures/test_*.mjs; do node "$f"; done`; expected: no product changes and all tests pass.
 - [ ] **Step 2: Sync only extension source.**
 
 ```bash
-rsync -a --delete --exclude '.git/' --exclude '.worktrees/' --exclude '.claude/' --exclude '.superpowers/' ./ /Users/harshabalakrishnan/Desktop/MyTicker-dev/
+rsync -a --delete --exclude '.git/' --exclude '.worktrees/' --exclude '.claude/' --exclude '.superpowers/' ./ <local-path>
 ```
 
-- [ ] **Step 3: Verify desktop contents.** Run `rg -n '"version"|"name"' /Users/harshabalakrishnan/Desktop/MyTicker-dev/manifest.json && rg -n 'CoinGecko|Tape size|MyTicker' /Users/harshabalakrishnan/Desktop/MyTicker-dev/options.html`; expected: canonical name and controls present.
+- [ ] **Step 3: Verify desktop contents.** Run `rg -n '"version"|"name"' <local-path> && rg -n 'CoinGecko|Tape size|MyTicker' <local-path> expected: canonical name and controls present.
 - [ ] **Step 4: Reload the existing Brave extension loaded from that desktop folder.** Inspect popup, settings and an ordinary page; confirm page-level tape, native currency, scale and theme modes.
 - [ ] **Step 5: Report evidence.** Provide exact folder, build/version, test results, and checked screens; never claim browser-chrome placement.
