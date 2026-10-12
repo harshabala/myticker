@@ -120,3 +120,14 @@ test("messages: unknown types and non-extension senders get no response and no s
   assert.equal(calls.length, 0);
   assert.equal(fake.local.has("pts_finnhub_vault"), false);
 });
+
+test("corrupted stored holdings are ignored instead of failing every refresh", async () => {
+  for (const [tag, bad] of [["string", "oops"], ["object", { a: 1 }], ["mixed", [null, 5, { symbol: 7, quantity: 1 }, { symbol: "TCS.NS", quantity: "x" }, { symbol: "TCS.NS", quantity: 2, currency: "INR" }]]]) {
+    const { fake } = setup(() => jsonResponse(yahoo), { pts_holdings: bad });
+    await loadBackground(fake, `corrupt-${tag}`);
+    assert.deepEqual(await send(fake.listeners, { type: "poll-now", payload: {} }), { ok: true }, tag);
+    const state = fake.local.get("pts_positions_state");
+    if (tag === "mixed") assert.deepEqual(state.positions.map((p) => p.symbol), ["TCS.NS"]);
+    else assert.ok(!state || state.positions.length === 0, tag);
+  }
+});
