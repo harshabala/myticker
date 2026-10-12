@@ -15,7 +15,6 @@ import {
   summarizeMarketState,
   CONTENT_LIFECYCLE_STAGES,
   CRYPTO_CATALOG,
-  resolveCryptoCatalogEntry,
   normalizeCryptoId
 } from "./shared.js";
 

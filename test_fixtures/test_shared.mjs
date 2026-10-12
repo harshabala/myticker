@@ -21,7 +21,6 @@ import {
   normalizeExcludedSites,
   isHostTapeExcluded,
   migrateSettings,
-  CRYPTO_CATALOG,
   normalizeWatchlistSymbol,
   resolveCryptoCatalogEntry,
   normalizeCryptoConfig,

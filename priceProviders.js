@@ -230,7 +230,7 @@ export async function getCryptoQuotes(ids, providers = {}, { backoff } = {}) {
   const uniqueIds = [...new Set((ids || []).filter(Boolean))];
   const coinGecko = providers.coinGecko || new CoinGeckoPriceProvider({ backoff });
   const binance = providers.binance || new BinancePriceProvider({ backoff });
-  let coinGeckoQuotes = [];
+  let coinGeckoQuotes;
 
   try {
     coinGeckoQuotes = await coinGecko.getQuotes(uniqueIds);

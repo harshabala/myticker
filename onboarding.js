@@ -17,7 +17,7 @@ export async function getSetupStatus() {
     chrome.storage.sync.get([STORAGE_KEYS.settings])
   ]);
 
-  let vaultStatus = null;
+  let vaultStatus;
   try {
     vaultStatus = await new Promise((resolve) => chrome.runtime.sendMessage({ type: "vault-status", payload: {} }, resolve));
   } catch {

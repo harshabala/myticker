@@ -397,13 +397,13 @@ const WIZARD_STEP_TO_TAB = {
   3: "data" // go live / status
 };
 
-const DATA_PANEL_IDS = new Set(["setup", "market", "diagnostics", "tips"]);
+const DATA_PANEL_IDS = ["tab-setup", "tab-market", "tab-diagnostics", "tab-tips"];
 
 function consolidateDataPanels() {
   const dataPanel = document.getElementById("tab-data");
   const workspace = document.getElementById("dataWorkspace");
   if (!dataPanel || !workspace) return;
-  ["tab-setup", "tab-market", "tab-diagnostics", "tab-tips"].forEach((id) => {
+  DATA_PANEL_IDS.forEach((id) => {
     const section = document.getElementById(id);
     if (!section) return;
     section.removeAttribute("hidden");
@@ -913,7 +913,7 @@ async function handleImportCsv(fileOverride = null) {
   importInFlight = true;
   setFinderButtonBusy(true);
 
-  let presetKey = brokerPresetEl.value || "zerodha";
+  const presetKey = brokerPresetEl.value || "zerodha";
   try {
     const text = await readFileAsText(file);
     await processCsvText(text, presetKey);
