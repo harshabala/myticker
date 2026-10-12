@@ -24,7 +24,7 @@
     "type": "module"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://finnhub.io https://query1.finance.yahoo.com https://api.coingecko.com https://data-api.binance.vision; base-uri 'none'; form-action 'none'; frame-src 'none';"
   },
   "permissions": [
     "storage",

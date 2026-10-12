@@ -38,3 +38,30 @@ test("console output never interpolates symbols, keys, or URLs", async () => {
     }
   }
 });
+
+test("extension-page CSP blocks remote code and limits connections to the declared hosts", async () => {
+  const manifest = JSON.parse(await read("manifest.json"));
+  const csp = Object.fromEntries(
+    manifest.content_security_policy.extension_pages.split(";").map((part) => part.trim()).filter(Boolean).map((part) => {
+      const [name, ...values] = part.split(/\s+/);
+      return [name, values];
+    })
+  );
+  assert.deepEqual(csp["script-src"], ["'self'"]);
+  assert.deepEqual(csp["object-src"], ["'self'"]);
+  assert.deepEqual(csp["base-uri"], ["'none'"]);
+  assert.deepEqual(csp["form-action"], ["'none'"]);
+  assert.deepEqual(csp["frame-src"], ["'none'"]);
+  const hosts = manifest.host_permissions.map((p) => p.replace("/*", ""));
+  assert.deepEqual(csp["connect-src"], ["'self'", ...hosts]);
+});
+
+test("no inline event handlers, inline scripts or remote scripts in extension pages", async () => {
+  for (const file of ["popup.html", "options.html"]) {
+    const html = await read(file);
+    assert.doesNotMatch(html, /\son[a-z]+\s*=\s*["']/i, `${file}: inline handler`);
+    assert.doesNotMatch(html, /<script(?![^>]*\ssrc=)[^>]*>/i, `${file}: inline script`);
+    assert.doesNotMatch(html, /<script[^>]*\ssrc=["']https?:/i, `${file}: remote script`);
+    assert.doesNotMatch(html, /<link[^>]*href=["']https?:/i, `${file}: remote stylesheet`);
+  }
+});

@@ -106,7 +106,7 @@ const expectedProviderHosts = [
   "https://data-api.binance.vision/*"
 ];
 assert(JSON.stringify(manifest.host_permissions) === JSON.stringify(expectedProviderHosts), "declares only the required Yahoo, CoinGecko, Binance, and Finnhub provider hosts");
-assert(manifest.content_security_policy?.extension_pages === "script-src 'self'; object-src 'self';", "pins extension pages to self-hosted scripts with an explicit MV3 CSP");
+assert(/^script-src 'self'; object-src 'self'; /.test(manifest.content_security_policy?.extension_pages || ""), "pins extension pages to self-hosted scripts with an explicit MV3 CSP");
 assert(manifest.permissions?.length === 2 && manifest.permissions.includes("storage") && manifest.permissions.includes("alarms"), "requests only storage and alarms extension permissions");
 assert(manifest.web_accessible_resources?.length === 1 && manifest.web_accessible_resources[0]?.resources?.length === 1 && manifest.web_accessible_resources[0]?.resources?.[0] === "ticker.css" && manifest.web_accessible_resources[0]?.matches?.join() === "<all_urls>", "exposes only the tape stylesheet to pages where the closed shadow-root tape needs it");
 const releaseCopy = `${readmeSource}\n${privacySource}\n${storeListingSource}`;
