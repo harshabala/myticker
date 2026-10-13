@@ -4,6 +4,12 @@ All notable changes to MyTicker. Versions follow `manifest.json`.
 
 ## Unreleased: production hardening
 
+### Build, packaging and docs
+- ESLint (dev-only), lockfile, `.nvmrc`; deterministic store packager (`npm run package`), version-consistency check and sensitive-content scan; CI runs all of them plus `npm audit`.
+- Extension-page CSP now also restricts `connect-src` to the four provider hosts and sets `base-uri`, `form-action` and `frame-src`.
+- Malformed stored holdings are ignored instead of failing every refresh.
+- Added ARCHITECTURE, CONTRIBUTING, SECURITY and RELEASING docs; refreshed STORE_LISTING (permission justifications, screenshots list); fixed stale repository links.
+
 ### Fixed
 - **Indian day P&L was a five-day change.** Yahoo's `chartPreviousClose` is the close before the first bar of the 5-day chart. Day P&L now uses the previous session's daily close (split-adjusted).
 - A Finnhub previous close of `0` no longer turns a whole position's value into day P&L. Missing previous closes show `—` instead of a 15-minute change labelled "day".

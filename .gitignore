@@ -31,3 +31,4 @@ MyTicker.pem
 .worktrees/
 * 2.*
 .DS_Store
+test_fixtures/user_holdings.csv

@@ -98,7 +98,7 @@ function setTab(tab, mainContent) {
 function handleTabKeydown(event, mainContent) {
   const tabs = [document.getElementById("tabHoldings"), document.getElementById("tabWatchlist")].filter(Boolean);
   const currentIndex = tabs.indexOf(event.currentTarget);
-  let nextIndex = currentIndex;
+  let nextIndex;
   if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (currentIndex + 1) % tabs.length;
   else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
   else if (event.key === "Home") nextIndex = 0;
@@ -321,7 +321,7 @@ export function updatePnlInPlace(viewEl, state, watchlistItems) {
   }
   if (!state?.positions?.length) return;
 
-  const { currency, dayPnl, dayDisplay, fiveDisplay } = aggregateDisplays(state);
+  const { currency, dayDisplay, fiveDisplay } = aggregateDisplays(state);
 
   const pnlValue = viewEl.querySelector(".pnl-value");
   const pnlPct = viewEl.querySelector(".pnl-pct");

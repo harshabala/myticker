@@ -1,11 +1,14 @@
 # AGENTS.md
 
-MyTicker: Manifest V3 Chrome extension (ticker strip with local portfolio P&L). No build step, no runtime dependencies, Node 20+.
+MyTicker: Manifest V3 Chrome extension (ticker strip with local portfolio P&L). No build step, no runtime dependencies, Node 20.19+ (dev-only ESLint).
 
 ## Commands
 - `npm run check` - syntax-check shipped scripts and verify manifest file references
 - `npm test` - `node --test` over `tests/*.test.mjs` and `test_fixtures/test_*.mjs`
-- `npm run verify` - both of the above
+- `npm run lint` - ESLint; `npm run scan` - secret/personal-path scan (repo is public)
+- `npm run verify` - check, lint, version consistency, scan, tests
+- `npm run package` - build `dist/myticker-<version>.zip` (never publish)
+- Docs: ARCHITECTURE.md, CONTRIBUTING.md, SECURITY.md, RELEASING.md
 
 ## Layout
 - `background.js` service worker (polling, state); `contentScript.js` strip UI; `popup.*` scoreboard; `options.*` setup/import

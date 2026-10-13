@@ -1,14 +1,25 @@
 {
   "name": "myticker-extension",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "description": "MyTicker Chrome extension (no build step, no runtime dependencies)",
   "scripts": {
     "test": "node --test test_fixtures/test_*.mjs tests/*.test.mjs",
     "check": "node scripts/check-syntax.mjs",
-    "verify": "npm run check && npm test"
+    "lint": "eslint .",
+    "check:version": "node scripts/check-version.mjs",
+    "scan": "node scripts/scan-sensitive.mjs",
+    "audit:deps": "npm audit --audit-level=low",
+    "package": "node scripts/package.mjs",
+    "verify": "npm run check && npm run lint && npm run check:version && npm run scan && npm test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "globals": "17.13.0"
   }
 }

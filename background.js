@@ -15,7 +15,6 @@ import {
   summarizeMarketState,
   CONTENT_LIFECYCLE_STAGES,
   CRYPTO_CATALOG,
-  resolveCryptoCatalogEntry,
   normalizeCryptoId
 } from "./shared.js";
 
@@ -394,7 +393,7 @@ async function handlePricePoll() {
     const settings = migrateSettings(syncData[STORAGE_KEYS.settings]);
     if (!settings.enabled) return;
 
-    const baseHoldings = localData[STORAGE_KEYS.holdings] || [];
+    const baseHoldings = sanitizeStoredHoldings(localData[STORAGE_KEYS.holdings]);
     const watchlist = normalizeWatchlist(localData[STORAGE_KEYS.watchlist]);
     const crypto = buildCryptoTickerItems(settings);
     const diagnosticCounts = {
@@ -503,7 +502,7 @@ async function handlePricePoll() {
     // Holdings may have been re-imported or cleared while quotes were in
     // flight; writing now would resurrect deleted positions. Skip this write;
     // the poll requested by the import will rebuild state.
-    const latestHoldings = (await chrome.storage.local.get([STORAGE_KEYS.holdings]))[STORAGE_KEYS.holdings] || [];
+    const latestHoldings = sanitizeStoredHoldings((await chrome.storage.local.get([STORAGE_KEYS.holdings]))[STORAGE_KEYS.holdings]);
     if (JSON.stringify(latestHoldings) !== JSON.stringify(baseHoldings)) {
       return;
     }
@@ -540,6 +539,16 @@ async function handlePricePoll() {
       handlePricePoll();
     }
   }
+}
+
+/**
+ * Stored holdings come from CSV import, but storage can be corrupted or edited
+ * (or written by another version). A non-array or malformed entry must not
+ * make every refresh fail, so keep only well-formed rows.
+ */
+function sanitizeStoredHoldings(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item) => item && typeof item === "object" && typeof item.symbol === "string" && item.symbol.trim() && Number.isFinite(Number(item.quantity)));
 }
 
 function buildCombinedHoldings(baseHoldings, settings) {

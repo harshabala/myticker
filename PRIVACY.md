@@ -70,4 +70,4 @@ Alternatively, you can clear extension data via Chrome Settings → Privacy → 
 
 ## Contact
 
-If you have questions about this privacy policy, please open an issue on [GitHub](https://github.com/harshabala/myticker-extension/issues).
+If you have questions about this privacy policy, please open an issue on [GitHub](https://github.com/harshabala/myticker/issues).
