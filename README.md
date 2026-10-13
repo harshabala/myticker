@@ -161,19 +161,23 @@ Writer: **background.js** for refresh/activation; **options.js** for import outc
 
 ### Dev install and tests
 
-Requires Node 20+. There are no npm dependencies, so there is nothing to install.
+Requires Node 20.19+ (`.nvmrc`). There are no runtime dependencies; `npm ci` installs ESLint only (dev).
 
 ```bash
+npm ci
 npm run check   # syntax-check every shipped script; verify manifest file references
+npm run lint    # ESLint
+npm run verify  # check + lint + version consistency + sensitive-content scan + tests
+npm run package # dist/myticker-<version>.zip for the store (does not publish)
 npm test        # node --test: tests/*.test.mjs plus every test_fixtures/test_*.mjs script
 ```
 
-CI (`.github/workflows/test.yml`) runs both on every push and pull request. Tests never call the real
+CI (`.github/workflows/test.yml`) runs check, lint, version check, scan, tests, `npm audit` and packaging on every push and pull request. Tests never call the real
 Yahoo, Finnhub, CoinGecko, or Binance APIs; provider responses come from `test_fixtures/providers/`.
 
 Load unpacked from the repo root. Manual E2E: save key → import `test_fixtures/sample_holdings_zerodha.csv` → keep popup open until first poll.
 
-Task checklist: [docs/TASKS.md](docs/TASKS.md) · Privacy: [PRIVACY.md](PRIVACY.md)
+Task checklist: [docs/TASKS.md](docs/TASKS.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) · [RELEASING.md](RELEASING.md) · Privacy: [PRIVACY.md](PRIVACY.md)
 
 ### Permissions
 
