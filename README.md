@@ -156,7 +156,7 @@ Writer: **background.js** for refresh/activation; **options.js** for import outc
 | Scoreboard popup | Aggregate day P&amp;L, top 3 movers by \|day %\|, strip status, method + privacy copy |
 | Setup spine | API → holdings → live; incomplete rows are CTAs |
 | Zerodha golden path | Sample CSV + auto `.NS`; other brokers under details |
-| Crypto (optional) | CoinGecko primary with mapped Binance fallback; core loop works without it |
+| Crypto (optional) | CoinGecko primary with mapped Binance fallback; coins with a quantity (crypto CSV or manual list) show a 24-hour P&amp;L in USD on the tape, never added to the portfolio total |
 | Local privacy | Keys/holdings local; footer names Finnhub honesty |
 
 ### Dev install and tests

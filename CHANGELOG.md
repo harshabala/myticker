@@ -26,6 +26,7 @@ All notable changes to MyTicker. Versions follow `manifest.json`.
 - `-₹0.00` / `-0.00%` rounding artefacts.
 
 ### Added
+- Crypto quantities now count: coins with a quantity (crypto CSV import or the manual list) show their 24-hour P&L in USD on the tape, labelled `24h p&l`. It is never added to the portfolio total. Previously quantities were stored and ignored.
 - Unlock codes may be long passphrases (up to 128 characters, spaces and any characters). A non-blocking strength hint recommends 12+ characters; the 6-character minimum is unchanged, so existing vaults keep working.
 - Change the unlock code from Settings. The key is re-encrypted atomically; a wrong current code or any failure leaves the old vault intact.
 

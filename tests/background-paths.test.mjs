@@ -40,6 +40,9 @@ test("watchlist and crypto are polled, ordered after holdings, and kept out of p
   assert.ok(symbols.includes("INFY.NS") && symbols.includes("bitcoin") && symbols.includes("ethereum"), symbols.join());
   assert.ok(Math.abs(state.aggregate.dayPnl - (3556.8 - 3520) * 50) < 1e-6, "aggregate is holdings-only");
   assert.equal(state.displayCurrency, "INR");
+  const bitcoin = state.tickerItems.find((item) => item.symbol === "bitcoin");
+  assert.ok(Math.abs(bitcoin.dayPnl - 2 * (65000 - 65000 / 1.015)) < 1e-6, "manual crypto quantity gives a 24h P&L");
+  assert.equal(state.tickerItems.find((item) => item.symbol === "ethereum").dayPnl, null, "watchlist crypto has no P&L");
   assert.ok(calls.includes("api.coingecko.com"));
   assert.ok(!calls.includes("finnhub.io"), "no Finnhub request without an unlocked key");
 });

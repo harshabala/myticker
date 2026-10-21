@@ -596,13 +596,26 @@ function normalizeTickerItem(item = {}, kind) {
 }
 
 /**
+ * 24-hour P&L of a crypto quantity in its quote currency (USD), from the
+ * provider's 24h change: price was lastPrice / (1 + change). Null when any
+ * input is missing. Never part of the portfolio aggregate.
+ */
+function cryptoDayPnl(item) {
+  const quantity = Number(item?.quantity);
+  const price = Number(item?.lastPrice);
+  const changePct = Number(item?.changePct);
+  if (!(quantity > 0) || !(price > 0) || item?.changePct == null || !Number.isFinite(changePct) || changePct <= -100) return null;
+  return quantity * (price - price / (1 + changePct / 100));
+}
+
+/**
  * Normalise sources for ticker rendering while keeping holdings P&L intact.
  */
 function buildTickerItems({ positions = [], watchlist = [], crypto = [] } = {}) {
   return [
     ...positions.map((item) => normalizeTickerItem(item, "holding")),
     ...watchlist.map((item) => ({ ...normalizeTickerItem(item, "watchlist"), dayPnl: null })),
-    ...crypto.map((item) => ({ ...normalizeTickerItem(item, "crypto"), dayPnl: null }))
+    ...crypto.map((item) => ({ ...normalizeTickerItem(item, "crypto"), dayPnl: cryptoDayPnl(item) }))
   ];
 }
 
@@ -683,6 +696,7 @@ export {
   ACTIVATION_EVENT,
   isActivated,
   needsFinnhubKey,
+  cryptoDayPnl,
   recordActiveDay,
   mergePriceSnapshots,
   computePositionsState,

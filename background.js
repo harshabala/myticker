@@ -578,14 +578,21 @@ function buildCryptoTickerItems(settings) {
   const cryptoConfig = normalizeCryptoConfig(settings.cryptoConfig || DEFAULT_SETTINGS.cryptoConfig);
   if (!filters.showCrypto || cryptoConfig.mode === "off") return [];
 
+  // Manual holdings carry quantities (crypto CSV import or the manual list);
+  // they give a per-coin 24h P&L on the tape, never the portfolio total.
+  const quantities = new Map();
   const symbols = cryptoConfig.mode === "manual"
-    ? (Array.isArray(cryptoConfig.manualHoldings) ? cryptoConfig.manualHoldings : []).map((item) => item?.symbol)
+    ? (Array.isArray(cryptoConfig.manualHoldings) ? cryptoConfig.manualHoldings : []).map((item) => {
+      const id = normalizeCryptoId(item?.symbol);
+      if (id) quantities.set(id, (quantities.get(id) || 0) + (Number(item?.quantity) > 0 ? Number(item.quantity) : 0));
+      return id;
+    })
     : DEFAULT_TOP5_CRYPTO;
 
   return [...new Set(symbols.map((symbol) => normalizeCryptoId(symbol)).filter(Boolean))].map((symbol) => ({
     symbol,
     displayName: symbol,
-    quantity: 0,
+    quantity: quantities.get(symbol) || 0,
     assetClass: "crypto",
     currency: "USD"
   }));

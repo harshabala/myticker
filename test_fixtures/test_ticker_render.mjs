@@ -100,7 +100,8 @@ const state = {
     { kind: "holding", symbol: "RELIANCE.NS", displayName: "Reliance", lastPrice: 1450, dayPnl: 25, dayPnlPct: 0.5, currency: "INR" },
     { kind: "holding", symbol: "MSFT", displayName: "Microsoft", lastPrice: 480, dayPnl: 25, dayPnlPct: -0.5, currency: "USD", stale: true },
     { kind: "watchlist", symbol: "AAPL", displayName: "Apple", lastPrice: 210, changePct: 1.5, currency: "USD" },
-    { kind: "crypto", symbol: "bitcoin", displayName: "Bitcoin", lastPrice: 65000, changePct: 1.5, currency: "USD", assetClass: "crypto" }
+    { kind: "crypto", symbol: "bitcoin", displayName: "Bitcoin", lastPrice: 65000, changePct: 1.5, currency: "USD", assetClass: "crypto" },
+    { kind: "crypto", symbol: "ethereum", displayName: "Ethereum", lastPrice: 3000, changePct: 2, dayPnl: 58.82, currency: "USD", assetClass: "crypto" }
   ]
 };
 const requestedTapeSize = process.env.TAPE_SCALE === "compact" ? "compact" : "large";
@@ -229,7 +230,8 @@ assert(rendered.includes("210.00"), "renders cached current price after delayed 
 assert(rendered.includes("₹1,450.00"), "renders Indian holdings in rupees");
 assert(rendered.includes("$480.00") && rendered.includes("$65,000.00"), "renders US and crypto items in dollars");
 assert(rendered.includes("holdings") && rendered.includes("watchlist"), "marks ticker group boundaries");
-assert(rendered.includes("p&l") && !rendered.includes("p&l $0.00"), "shows personal P&L only for holdings");
+assert(rendered.includes("p&l") && !rendered.includes("p&l $0.00"), "shows personal P&L for holdings, not quote-only items");
+assert(rendered.includes("24h p&l +$58.82"), "shows a crypto quantity's 24h P&L in dollars");
 assert(rendered.includes("stale"), "shows an item-level stale indicator");
 
 console.log("\n📡 content lifecycle telemetry");

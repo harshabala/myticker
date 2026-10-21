@@ -640,8 +640,10 @@ function updateItemElement(item, pos, isGroupBoundary) {
   changeSpan.textContent = `${formatSigned(changePct)}%`;
   // null day P&L = no previous close from the provider: unknown, not zero.
   const pnlText = pos.dayPnl == null ? "—" : formatSignedCurrency(dayPnl, pos.currency || "USD");
-  pnlSpan.textContent = isHolding ? `p&l ${pnlText}` : "";
-  pnlSpan.hidden = !isHolding;
+  // Crypto with a quantity: its own 24h P&L, never part of the total.
+  const cryptoPnl = pos.kind === "crypto" && pos.dayPnl != null;
+  pnlSpan.textContent = isHolding ? `p&l ${pnlText}` : cryptoPnl ? `24h p&l ${pnlText}` : "";
+  pnlSpan.hidden = !isHolding && !cryptoPnl;
   staleSpan.textContent = pos.stale ? "stale" : "";
   staleSpan.hidden = !pos.stale;
   staleSpan.setAttribute("aria-label", pos.stale ? "Stale quote" : "");
