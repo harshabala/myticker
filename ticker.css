@@ -37,7 +37,7 @@
   --pts-border: #cdd1d2;
   --pts-hairline: #dce0df;
   --green: #167a43;
-  --red: #bd4c47;
+  --red: #b54944;
   --yellow: #8b6308;
   }
 }
@@ -78,9 +78,9 @@
   --pts-muted: #5f6b7a;
   --pts-border: #cbd2dc;
   --pts-hairline: #dce2e8;
-  --green: #078a62;
-  --red: #cf4d55;
-  --yellow: #9b6d11;
+  --green: #067e59;
+  --red: #bc464d;
+  --yellow: #926610;
 }
 
 .pts-ticker-bar[data-theme="dark"] {
