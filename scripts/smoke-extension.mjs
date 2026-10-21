@@ -286,6 +286,25 @@ async function main() {
     else checks.push(`page content pushed below the tape without a jump (${margins.join(" -> ")})`);
     await screenshot(page, "tape-on-page.png");
 
+    // Crypto with a quantity: its own 24h P&L on the tape, not in the total.
+    await evaluate(swSession, `chrome.storage.sync.get('pts_settings').then((d) => chrome.storage.sync.set({ pts_settings: { ...(d.pts_settings || {}), enabled: true, cryptoConfig: { includeCrypto: true, mode: "manual", manualHoldings: [{ symbol: "bitcoin", quantity: 2 }] } } })).then(() => chrome.alarms.create("price-poll", { when: Date.now() })).then(() => true)`);
+    const cryptoText = await waitFor(async () => {
+      const { root } = await cdp.send("DOM.getDocument", { depth: -1, pierce: true }, page);
+      const text = [];
+      const walk = (node) => {
+        if (node.nodeType === 3) text.push(node.nodeValue);
+        (node.children || []).forEach(walk);
+        (node.shadowRoots || []).forEach(walk);
+      };
+      walk(root);
+      const joined = text.join(" ");
+      return /24h p&l \+\$1,921\.18/.test(joined) ? joined : null;
+    }, { label: "crypto 24h P&L on the tape", timeout: 15_000 });
+    const after = await evaluate(swSession, "chrome.storage.local.get('pts_positions_state')");
+    if (Math.abs(after.pts_positions_state.aggregate.dayPnl - state.aggregate.dayPnl) > 1e-6) problems.push("crypto P&L changed the portfolio total");
+    else checks.push(`tape shows bitcoin's 24h P&L in USD (${cryptoText.match(/24h p&l \S+/)[0]}), total unchanged`);
+    await screenshot(page, "tape-with-crypto.png");
+
     // Keyboard command path: toggling off removes the tape.
     await evaluate(swSession, "chrome.storage.sync.get('pts_settings').then(d => chrome.storage.sync.set({ pts_settings: { ...(d.pts_settings || {}), enabled: false } })).then(() => true)");
     await waitFor(async () => {
