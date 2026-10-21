@@ -321,13 +321,6 @@ function init() {
       handleImportPackagedCsv("test_fixtures/sample_holdings_zerodha.csv", "zerodha");
     });
   }
-  const importUserBtn = document.getElementById("importUserHoldingsButton");
-  if (importUserBtn) {
-    importUserBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      handleImportPackagedCsv("test_fixtures/user_holdings.csv", "zerodha");
-    });
-  }
 
   // Populate preview on load.
   handleRefreshPreview();
@@ -969,7 +962,7 @@ function wireFileInput(input, onFile) {
 
 /**
  * Load a CSV packaged inside the extension (no FileReader / OS permission issues).
- * @param {string} relativePath e.g. test_fixtures/user_holdings.csv
+ * @param {string} relativePath e.g. test_fixtures/sample_holdings_zerodha.csv
  * @param {string} presetHint
  */
 async function handleImportPackagedCsv(relativePath, presetHint = "zerodha") {

@@ -49,3 +49,16 @@ test("packaging is deterministic", () => {
   const small = createZip([{ name: "a.txt", data: Buffer.from("hello hello hello hello") }]);
   assert.equal(readZip(small).get("a.txt").toString(), "hello hello hello hello");
 });
+
+// Regression: Settings showed an "Import packaged holdings" button (its
+// `hidden` attribute was overridden by `.btn` display) that fetched
+// test_fixtures/user_holdings.csv, a gitignored file that is never packaged.
+test("extension pages only fetch packaged files", () => {
+  const packaged = new Set(collectFiles());
+  for (const page of ["options.js", "popup.js", "options.html", "popup.html"]) {
+    const source = readFileSync(join(ROOT, page), "utf8");
+    for (const [, path] of source.matchAll(/["'](test_fixtures\/[^"']+)["']/g)) {
+      assert.ok(packaged.has(path), `${page} references ${path}, which is not in the package`);
+    }
+  }
+});
