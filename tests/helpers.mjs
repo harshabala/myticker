@@ -3,7 +3,8 @@ export function createChromeFake({ sync: syncInit = {}, local: localInit = {}, s
   const local = new Map(Object.entries(localInit));
   const session = new Map(Object.entries(sessionInit));
   const sync = new Map(Object.entries(syncInit));
-  const listeners = { message: null, alarm: null };
+  const listeners = { message: null, alarm: null, installed: null, command: null };
+  const opened = { optionsPage: 0 };
   const alarms = new Map();
   const read = (map, keys) => {
     const list = keys == null ? [...map.keys()] : Array.isArray(keys) ? keys : [keys];
@@ -36,8 +37,8 @@ export function createChromeFake({ sync: syncInit = {}, local: localInit = {}, s
     runtime: {
       id: "test-extension-id",
       onMessage: { addListener: (fn) => { listeners.message = fn; } },
-      onInstalled: { addListener() {} },
-      openOptionsPage() {},
+      onInstalled: { addListener: (fn) => { listeners.installed = fn; } },
+      openOptionsPage() { opened.optionsPage++; },
       getManifest: () => ({ version: "test" })
     },
     alarms: {
@@ -46,9 +47,9 @@ export function createChromeFake({ sync: syncInit = {}, local: localInit = {}, s
       clear: (name, callback) => { alarms.delete(name); callback?.(true); },
       onAlarm: { addListener: (fn) => { listeners.alarm = fn; } }
     },
-    commands: { onCommand: { addListener() {} } }
+    commands: { onCommand: { addListener: (fn) => { listeners.command = fn; } } }
   };
-  return { chrome, local, session, sync, listeners, alarms, hooks };
+  return { chrome, local, session, sync, listeners, alarms, hooks, opened };
 }
 
 export const TRUSTED_PAGE = { id: "test-extension-id", url: "chrome-extension://test-extension-id/options.html" };
