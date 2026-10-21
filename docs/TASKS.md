@@ -23,13 +23,13 @@ activated = api_ok AND holdings_count >= 1 AND ticker_enabled
 
 Constant: `ACTIVATION_EVENT = "myticker_activated"` in `shared.js`.
 
-## Known limitation (not in this PR)
+## Known limitation (resolved)
 
-Watchlist **prices** may stay empty because `background.js` does not poll watchlist-only symbols. Watchlist storage key is fixed so the popup no longer hangs; price fill remains orthogonal follow-up work.
+Watchlist-only symbols are now polled with holdings and crypto (`background.js` `handlePricePoll`); `tests/background-paths.test.mjs` covers it.
 
 ## Verify
 
 ```bash
-npm run check
-npm test
+npm run verify
+CHROME_PATH=/path/to/chromium npm run smoke   # browser E2E, see CONTRIBUTING.md
 ```

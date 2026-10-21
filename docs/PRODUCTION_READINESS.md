@@ -42,6 +42,10 @@ Overall: not a 10. The extension is store-ready in the repository; remaining gap
 
 Checked and found fine: manifest permissions and the four host permissions match the code (test-enforced); the content script uses a closed Shadow DOM, top frame only, with one web-accessible stylesheet; provider requests have timeouts, persisted backoff, a 30 s cache and partial-result handling; portfolio data is local only (`chrome.storage.local`, never sync) and documented in PRIVACY.md.
 
+## Update 2026-10-21 (branch `harsha/path-to-10`)
+
+The scores above were optimistic about the UI: the first time the unpacked extension was loaded in a real browser (headless Brave, network blocked, fixture prices) it showed that Settings threw on every load, the tape never appeared on a fresh install, and pages jumped ~360px while the tape's stylesheet loaded. All three are fixed with regression tests, along with a visible dead "Import packaged holdings" button and light-theme colours below WCAG AA. `npm run smoke` now repeats that browser check. Rating and plan: [plans/2026-10-21-path-to-10.md](plans/2026-10-21-path-to-10.md).
+
 ## Blocked on owner
 
 - Chrome Web Store developer account, listing submission and review (nothing was submitted).
