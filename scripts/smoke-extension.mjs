@@ -87,6 +87,8 @@ async function main() {
   const browserPath = CANDIDATES.find((p) => existsSync(p));
   if (!browserPath) {
     console.log("smoke: no Chromium-based browser found; set CHROME_PATH. Skipping.");
+    // In CI a missing browser is a broken setup, not a pass.
+    if (process.env.CI) process.exitCode = 1;
     return;
   }
   const outDir = process.env.SMOKE_OUT || (await mkdtemp(join(tmpdir(), "myticker-smoke-out-")));
@@ -119,6 +121,9 @@ async function main() {
     `--disable-extensions-except=${ROOT}`,
     `--load-extension=${ROOT}`,
     "--window-size=1280,800",
+    // CI runners (Ubuntu 24 AppArmor) block the namespace sandbox; the
+    // throwaway profile only ever loads this repo and 127.0.0.1.
+    ...(process.env.CI ? ["--no-sandbox"] : []),
     "about:blank"
   ], { stdio: "ignore" });
 

@@ -18,7 +18,7 @@ For UI changes, also run the browser smoke test. It loads the unpacked extension
 CHROME_PATH="/Applications/Chromium.app/Contents/MacOS/Chromium" npm run smoke
 ```
 
-It exits 0 with a skip message when no browser is found, so it is not part of `npm run verify`. Screenshots go to `SMOKE_OUT` (default: a temp folder).
+Locally it exits 0 with a skip message when no browser is found, so it is not part of `npm run verify`; with `CI` set a missing browser fails. CI runs it in a separate `smoke` job with Chrome for Testing and keeps the screenshots as an artifact. Screenshots go to `SMOKE_OUT` (default: a temp folder).
 
 ## Rules
 
