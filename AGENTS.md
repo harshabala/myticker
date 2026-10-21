@@ -7,6 +7,7 @@ MyTicker: Manifest V3 Chrome extension (ticker strip with local portfolio P&L). 
 - `npm test` - `node --test` over `tests/*.test.mjs` and `test_fixtures/test_*.mjs`
 - `npm run lint` - ESLint; `npm run scan` - secret/personal-path scan (repo is public)
 - `npm run verify` - check, lint, version consistency, scan, tests
+- `npm run smoke` - load the unpacked extension in headless Chromium/Brave (`CHROME_PATH`), fixture prices, network blocked; checks Settings, popup and tape
 - `npm run package` - build `dist/myticker-<version>.zip` (never publish)
 - Docs: ARCHITECTURE.md, CONTRIBUTING.md, SECURITY.md, RELEASING.md
 

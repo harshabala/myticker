@@ -169,6 +169,7 @@ npm run check   # syntax-check every shipped script; verify manifest file refere
 npm run lint    # ESLint
 npm run verify  # check + lint + version consistency + sensitive-content scan + tests
 npm run package # dist/myticker-<version>.zip for the store (does not publish)
+npm run smoke   # headless Chromium/Brave E2E: import sample CSV, popup, tape (CHROME_PATH, see CONTRIBUTING)
 npm test        # node --test: tests/*.test.mjs plus every test_fixtures/test_*.mjs script
 ```
 

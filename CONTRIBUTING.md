@@ -12,6 +12,14 @@ npm run verify     # syntax, lint, version consistency, sensitive-content scan, 
 
 Load the repo root as an unpacked extension at `chrome://extensions` to try changes.
 
+For UI changes, also run the browser smoke test. It loads the unpacked extension in a headless Chromium-based browser with a throwaway profile and all outside hosts blocked, serves provider responses from `test_fixtures/providers/`, imports the sample Zerodha CSV through Settings, and checks Settings, the popup and the Ticker Tape on a local page: no uncaught errors, P&L rendered, no layout jump, no `[hidden]` element shown. Branded Google Chrome 137+ ignores `--load-extension`, so point `CHROME_PATH` at Chromium, Chrome for Testing or Brave:
+
+```bash
+CHROME_PATH="/Applications/Chromium.app/Contents/MacOS/Chromium" npm run smoke
+```
+
+It exits 0 with a skip message when no browser is found, so it is not part of `npm run verify`. Screenshots go to `SMOKE_OUT` (default: a temp folder).
+
 ## Rules
 
 - Tests must never call real provider APIs; use `test_fixtures/providers/`.

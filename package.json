@@ -12,7 +12,8 @@
     "scan": "node scripts/scan-sensitive.mjs",
     "audit:deps": "npm audit --audit-level=low",
     "package": "node scripts/package.mjs",
-    "verify": "npm run check && npm run lint && npm run check:version && npm run scan && npm test"
+    "verify": "npm run check && npm run lint && npm run check:version && npm run scan && npm test",
+    "smoke": "node scripts/smoke-extension.mjs"
   },
   "engines": {
     "node": ">=20.19"
