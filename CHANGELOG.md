@@ -15,6 +15,7 @@ All notable changes to MyTicker. Versions follow `manifest.json`.
 - **The Ticker Tape did not appear on a fresh install** until a setting was saved: the content script read "no saved settings" as "off", while the worker and popup use the enabled default. The Zerodha/India path (no Finnhub key) never saves settings, so it never showed the tape.
 - Settings no longer shows a developer-only **Import packaged holdings** button (its `hidden` attribute was overridden by button styles); it could only fail, because the file it loads is never packaged.
 - Light-theme gain, loss and stale colours on the tape, popup and Settings now meet WCAG AA contrast (4.5:1); some were 4.0:1. A test checks every theme.
+- The copyable diagnostics report said "Ticker enabled: no" when settings had never been saved; it now follows the enabled default.
 - The page no longer jumps down by a few hundred pixels while the tape's stylesheet loads; the tape stays hidden and reserves no space until it is styled.
 - **Indian day P&L was a five-day change.** Yahoo's `chartPreviousClose` is the close before the first bar of the 5-day chart. Day P&L now uses the previous session's daily close (split-adjusted).
 - A Finnhub previous close of `0` no longer turns a whole position's value into day P&L. Missing previous closes show `—` instead of a 15-minute change labelled "day".

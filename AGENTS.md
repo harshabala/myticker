@@ -13,7 +13,7 @@ MyTicker: Manifest V3 Chrome extension (ticker strip with local portfolio P&L). 
 
 ## Layout
 - `background.js` service worker (polling, state); `contentScript.js` strip UI; `popup.*` scoreboard; `options.*` setup/import
-- `shared.js` P&L and activation logic; `priceProviders.js`, `csvParser.js`, `vault.js`
+- `shared.js` P&L and activation logic; `priceProviders.js`, `csvParser.js`, `vault.js`, `diagnostics.js`
 - `tests/`, `test_fixtures/` (sample CSVs, provider response fixtures)
 
 ## Rules

@@ -9,7 +9,7 @@ MyTicker is a Manifest V3 Chrome extension with no build step and no runtime dep
 | `background.js` | Service worker (module) | Polls providers on a `chrome.alarms` alarm, merges quotes, writes state, handles messages from extension pages |
 | `contentScript.js`, `contentShared.js` | Content script, all pages, top frame only | Renders the strip inside a closed Shadow DOM; reads state from storage; never reads page content |
 | `popup.*`, `onboarding.js` | Extension page | P&L scoreboard and setup checklist |
-| `options.*`, `csvParser.js` | Extension page | Key vault, CSV import, settings, diagnostics copy button |
+| `options.*`, `csvParser.js`, `diagnostics.js` | Extension page | Key vault, CSV import, settings, diagnostics copy button (`diagnostics.js` builds the counts-only report) |
 | `shared.js` | Shared | Storage keys, settings migration, P&L maths, freshness and activation rules |
 | `priceProviders.js` | Service worker | Yahoo, Finnhub, CoinGecko and Binance fetchers and response parsers |
 | `vault.js` | Extension contexts | AES-GCM vault for the optional Finnhub key (PBKDF2-SHA-256) |

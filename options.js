@@ -28,6 +28,7 @@ import {
   formatLastSync
 } from "./onboarding.js";
 import { getMetrics, recordImportResult } from "./metrics.js";
+import { formatDiagnosticsReport } from "./diagnostics.js";
 import { assessUnlockCodeStrength, isValidUnlockCode, UNLOCK_CODE_MAX_LENGTH } from "./vault.js";
 
 const brokerPresetEl = document.getElementById("brokerPreset");
@@ -504,19 +505,9 @@ function switchSettingsTab(tabId, { updateHash = true } = {}) {
   }
 }
 
-function formatDiagnosticTime(timestamp) {
-  const time = Number(timestamp);
-  return time ? new Date(time).toLocaleString() : "Never";
-}
-
-function providerResultLine(lastProviderResults, key, label) {
-  const count = Number(lastProviderResults?.[key]) || 0;
-  return `${label}: ${count} quote${count === 1 ? "" : "s"} in last provider result`;
-}
-
 async function renderDiagnostics() {
   if (!diagnosticsOutputEl) return;
-  const [syncData, localData] = await Promise.all([
+  const [syncData, localData, vaultResponse] = await Promise.all([
     chrome.storage.sync.get([STORAGE_KEYS.settings]),
     chrome.storage.local.get([
       STORAGE_KEYS.holdings,
@@ -525,47 +516,20 @@ async function renderDiagnostics() {
       STORAGE_KEYS.pollHealth,
       STORAGE_KEYS.diagnosticsLog,
       STORAGE_KEYS.contentScriptStatus
-    ])
+    ]),
+    sendVaultMessage("vault-status")
   ]);
-  const settings = syncData[STORAGE_KEYS.settings] || DEFAULT_SETTINGS;
-  const holdings = Array.isArray(localData[STORAGE_KEYS.holdings]) ? localData[STORAGE_KEYS.holdings] : [];
-  const watchlist = Array.isArray(localData[STORAGE_KEYS.watchlist]) ? localData[STORAGE_KEYS.watchlist] : [];
-  const state = localData[STORAGE_KEYS.positionsState] || {};
-  const health = localData[STORAGE_KEYS.pollHealth] || {};
-  const log = Array.isArray(localData[STORAGE_KEYS.diagnosticsLog]) ? localData[STORAGE_KEYS.diagnosticsLog] : [];
-  const providerResults = [...log].reverse().find((entry) => entry.event === "provider-results");
-  const contentStatus = localData[STORAGE_KEYS.contentScriptStatus] || {};
-  const cryptoEnabled = !!settings.cryptoConfig?.includeCrypto && settings.portfolioFilters?.showCrypto !== false;
-  const vaultResponse = await sendVaultMessage("vault-status");
-  const vaultStatus = vaultResponse?.status || { configured: false, unlocked: false };
-  const buildVersion = chrome.runtime.getManifest?.().version || "0.5.0";
-  const lines = [
-    `MyTicker diagnostics · build v${buildVersion}`,
-    `Ticker enabled: ${settings.enabled ? "yes" : "no"}`,
-    `Holdings: ${holdings.length} · Watchlist: ${watchlist.length} · Ticker items: ${(state.tickerItems || state.positions || []).length}`,
-    `Last state update: ${formatDiagnosticTime(state.updatedAt)}`,
-    `Poll health: ${Number(health.consecutiveFailures) || 0} consecutive failure(s) · last successful fetch ${formatDiagnosticTime(health.lastSuccessfulFetch)}`,
-    `Content script: ${contentStatus.stage || "never reported"} · ${contentStatus.origin || "no page origin"} · ${formatDiagnosticTime(contentStatus.timestamp)}${contentStatus.error ? ` · ${contentStatus.error.name}: ${contentStatus.error.message || ""}` : ""}`,
-    "",
-    "Provider availability and latest result:",
-    `CoinGecko: primary crypto source · ${cryptoEnabled ? "eligible when supported crypto is enabled" : "crypto disabled"} · ${providerResultLine(providerResults, "coinGeckoQuotes", "result")}`,
-    `Binance: fallback for mapped liquid crypto only · ${cryptoEnabled ? "available" : "crypto disabled"} · ${providerResultLine(providerResults, "binanceQuotes", "result")}`,
-    `Yahoo Finance: automatic for .NS/.BO · available · ${providerResultLine(providerResults, "yahooQuotes", "result")}`,
-    `Finnhub: US equities · ${vaultStatus.configured ? (vaultStatus.unlocked ? "key unlocked" : "key locked") : "not configured"} · ${providerResultLine(providerResults, "finnhubQuotes", "result")}`,
-    "",
-    "Recent refresh lifecycle (safe operational counts only):"
-  ];
-  if (!log.length) {
-    lines.push("No refresh diagnostics recorded yet.");
-  } else {
-    for (const entry of log.slice(-12)) {
-      const details = ["holdingsCount", "watchlistCount", "cryptoCount", "equitySymbols", "totalSymbols", "equityQuotes", "cryptoQuotes", "quoteCount"]
-        .filter((key) => Number.isFinite(entry[key]))
-        .map((key) => `${key.replace("Count", "")}=${entry[key]}`);
-      lines.push(`${formatDiagnosticTime(entry.timestamp)} · ${entry.event}${details.length ? ` · ${details.join(", ")}` : ""}${entry.error ? " · Refresh failed" : ""}`);
-    }
-  }
-  diagnosticsOutputEl.textContent = lines.join("\n");
+  diagnosticsOutputEl.textContent = formatDiagnosticsReport({
+    settings: syncData[STORAGE_KEYS.settings] || DEFAULT_SETTINGS,
+    holdings: localData[STORAGE_KEYS.holdings],
+    watchlist: localData[STORAGE_KEYS.watchlist],
+    state: localData[STORAGE_KEYS.positionsState],
+    health: localData[STORAGE_KEYS.pollHealth],
+    log: localData[STORAGE_KEYS.diagnosticsLog],
+    contentStatus: localData[STORAGE_KEYS.contentScriptStatus],
+    vaultStatus: vaultResponse?.status || { configured: false, unlocked: false },
+    buildVersion: chrome.runtime.getManifest?.().version || ""
+  });
 }
 
 async function copyDiagnostics() {

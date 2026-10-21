@@ -12,7 +12,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CLASSIC = ["contentShared.js", "contentScript.js"];
 const MODULES = [
   "background.js", "shared.js", "popup.js", "options.js", "onboarding.js",
-  "csvParser.js", "priceProviders.js", "metrics.js", "vault.js"
+  "csvParser.js", "priceProviders.js", "metrics.js", "vault.js", "diagnostics.js"
 ];
 
 let failures = 0;

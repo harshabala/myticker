@@ -17,7 +17,8 @@ const [popupHtml, popupJs, optionsHtml, optionsJs, brandCss, motionCss, tickerCs
   readFile(new URL("../popup.html", import.meta.url), "utf8"),
   readFile(new URL("../popup.js", import.meta.url), "utf8"),
   readFile(new URL("../options.html", import.meta.url), "utf8"),
-  readFile(new URL("../options.js", import.meta.url), "utf8"),
+  // Settings script surface: options.js plus the modules split out of it.
+  Promise.all(["../options.js", "../diagnostics.js"].map((path) => readFile(new URL(path, import.meta.url), "utf8"))).then((parts) => parts.join("\n")),
   readFile(new URL("../brand.css", import.meta.url), "utf8"),
   readFile(new URL("../motion.css", import.meta.url), "utf8"),
   readFile(new URL("../ticker.css", import.meta.url), "utf8"),

@@ -239,6 +239,15 @@ async function main() {
     else checks.push(`Settings imports the sample Zerodha CSV (${imported.length} holdings, .NS appended)`);
     await sleep(500);
     await screenshot(options, "options-after-import.png");
+
+    // Diagnostics report: rendered from storage, counts only.
+    await evaluate(options, "document.getElementById('refreshDiagnosticsButton')?.click(), true");
+    const report = await waitFor(async () => {
+      const text = await evaluate(options, "document.getElementById('diagnosticsOutput')?.textContent || ''");
+      return /Holdings: 5/.test(text) ? text : null;
+    }, { label: "diagnostics report" });
+    if (/TCS|RELIANCE|HDFCBANK/.test(report)) problems.push("options: diagnostics report contains holding symbols");
+    else checks.push("Settings diagnostics report shows counts and no symbols");
     const state = await waitFor(async () => {
       const data = await evaluate(swSession, "chrome.storage.local.get('pts_positions_state')");
       return data?.pts_positions_state?.positions?.length ? data.pts_positions_state : null;
