@@ -29,7 +29,7 @@ async function boot(page) {
     Object.defineProperty(globalThis, name, { value: anything(), configurable: true, writable: true });
   }
   try {
-    await import(`../${page}?boot-${Date.now()}`);
+    await import(`../${page}`);
   } finally {
     for (const [name, descriptor] of Object.entries(saved)) {
       if (descriptor) Object.defineProperty(globalThis, name, descriptor);
