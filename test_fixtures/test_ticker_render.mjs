@@ -169,6 +169,16 @@ const host = document.documentElement.children.find((child) => child.id === "pts
 const rendered = host?.shadowRootForTest?.textContent || "";
 console.log("\n📟 delayed ticker mount");
 assert(Boolean(host), "mounts after the body becomes available");
+// Until ticker.css loads the bar is unstyled (items stack, ~360px tall), so
+// it must neither show nor push the page down; then it reserves its height.
+const tapeStylesheet = host?.shadowRootForTest?.children.find((child) => child.tagName === "link");
+const unstyledBar = host?.shadowRootForTest?.children.find((child) => child.className.includes("pts-ticker-bar"));
+unstyledBar.getBoundingClientRect = () => ({ top: 0, height: 360 });
+resizeObserver?.callback();
+assert(document.body.style.marginTop === "12px" && unstyledBar.style.getPropertyValue("visibility") === "hidden", "does not show or reserve space for the tape before its stylesheet loads");
+unstyledBar.getBoundingClientRect = () => ({ top: 0, height: 0 });
+tapeStylesheet?.dispatchEvent({ type: "load" });
+assert(unstyledBar.style.getPropertyValue("visibility") === "", "reveals the tape once its stylesheet has loaded");
 assert(host?.shadowRootForTest?.children.find((child) => child.className.includes("pts-ticker-bar"))?.getAttribute("data-tape-size") === requestedTapeSize, `applies the selected ${requestedTapeSize} tape size to the tape root`);
 const tickerBar = host?.shadowRootForTest?.children.find((child) => child.className.includes("pts-ticker-bar"));
 const tickerParts = tickerBar?._ptsParts;

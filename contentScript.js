@@ -28,6 +28,10 @@ let chatgptDialog = null;
 let tapeReconcileFrame = null;
 let cancelTickerExit = null;
 let extensionContextAlive = true;
+// ticker.css loads asynchronously into the shadow root. Until it does, the
+// unstyled bar stacks its items (hundreds of px tall): keep it hidden and do
+// not reserve page space, or every page load jumps down and back.
+let tapeStylesReady = false;
 
 function isContextInvalidated(error) {
   return /extension context invalidated/i.test(String(error?.message || error || ""));
@@ -278,7 +282,7 @@ function clearChatGptReservation() {
 }
 
 function applyTapeReservation() {
-  if (!tickerBar || !document.body) return;
+  if (!tickerBar || !document.body || !tapeStylesReady) return;
   if (tapeReservation?.body && tapeReservation.body !== document.body) clearTapeReservation();
 
   if (!tapeReservation) {
@@ -400,14 +404,26 @@ function ensureTickerContainer(animate = false) {
 
   tickerShadow = tickerHost.attachShadow({ mode: "closed" });
 
+  tapeStylesReady = false;
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = chrome.runtime.getURL("ticker.css");
-  tickerShadow.appendChild(link);
 
   tickerBar = document.createElement("div");
   tickerBar.className = "pts-ticker-bar";
   tickerBar.style.pointerEvents = "auto";
+  tickerBar.style.setProperty("visibility", "hidden");
+  const bar = tickerBar;
+  // On error too: an unstyled tape beats a missing one.
+  const onStylesSettled = () => runSafely(() => {
+    if (tickerBar !== bar) return;
+    tapeStylesReady = true;
+    bar.style.removeProperty("visibility");
+    applyTapeReservation();
+  });
+  link.addEventListener("load", onStylesSettled, { once: true });
+  link.addEventListener("error", onStylesSettled, { once: true });
+  tickerShadow.appendChild(link);
   if (prefersReducedMotion() || !animate) {
     tickerBar.classList.add("pts-reduced-motion", "pts-ticker-visible");
   }
