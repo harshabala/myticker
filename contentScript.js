@@ -92,9 +92,14 @@ function prefersReducedMotion() {
   return reducedMotionMq.matches;
 }
 
-/** Global off or this host is on the Appearance exclusion list. */
+/**
+ * Global off or this host is on the Appearance exclusion list. No saved
+ * settings means defaults (enabled), as in the worker and popup: pts_settings
+ * is only written once the user saves something in Settings.
+ */
 function shouldShowTape(settings = tickerSettings) {
-  if (!settings || settings.enabled === false) return false;
+  settings = settings || {};
+  if (settings.enabled === false) return false;
   try {
     const host = globalThis.location?.hostname || "";
     if (typeof isHostTapeExcluded === "function" && isHostTapeExcluded(host, settings.excludedSites)) {
