@@ -158,8 +158,6 @@ function updatePortfolioSummary(holdings = []) {
   if (exchangeEl) exchangeEl.textContent = formatExchangeSummary(holdings);
 }
 
-init();
-
 function init() {
   setPlatformShortcut(document.getElementById("tipsShortcut"));
   consolidateDataPanels();
@@ -1701,4 +1699,5 @@ function showToast(message, type = "success") {
   }, 3000);
 }
 
-
+// Last, so every module-level const and let above is initialised first.
+init();
