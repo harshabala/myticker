@@ -175,6 +175,7 @@ const TYPES = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": 
 export async function serveDirectory(dir) {
   const base = resolve(dir);
   const server = createServer(async (req, res) => {
+    if (req.url === "/favicon.ico") { res.writeHead(204); res.end(); return; }
     try {
       const path = normalize(decodeURIComponent(new URL(req.url, "http://x").pathname)).replace(/^[/\\]+/, "");
       const file = resolve(base, path || "index.html");

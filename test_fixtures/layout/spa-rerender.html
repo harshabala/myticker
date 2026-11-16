@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Single-page app that re-renders its header</title>
+<link rel="stylesheet" href="common.css">
+<style>
+#app-header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+#app-header.compact { height: 40px; }
+#view { padding-top: 56px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="view">
+    <section id="s1" class="block"><h2>Section 1</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s2" class="block"><h2>Section 2</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s3" class="block"><h2>Section 3</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s4" class="block"><h2>Section 4</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s5" class="block"><h2>Section 5</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s6" class="block"><h2>Section 6</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s7" class="block"><h2>Section 7</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s8" class="block"><h2>Section 8</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s9" class="block"><h2>Section 9</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s10" class="block"><h2>Section 10</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s11" class="block"><h2>Section 11</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+    <section id="s12" class="block"><h2>Section 12</h2><p>Plain filler text so this page is taller than the window. It carries no real content, prices or holdings.</p></section>
+</div>
+<script>
+let route = 1;
+const root = document.getElementById("root");
+function renderHeader() {
+  root.innerHTML = '<header id="app-header" class="bar"><strong>App route ' + route + '</strong><a href="#s2">Link</a></header>';
+}
+renderHeader();
+// First re-render after load, like a framework hydrating late.
+setTimeout(() => { route = 2; renderHeader(); }, 300);
+// A route change replaces the whole header and flips classes.
+window.__navigate = () => {
+  route += 1;
+  history.pushState({}, "", "#route-" + route);
+  renderHeader();
+  document.getElementById("app-header").classList.toggle("compact", route % 2 === 0);
+};
+// Class churn on the live header without replacing it.
+window.__toggleClasses = () => {
+  const h = document.getElementById("app-header");
+  h.classList.toggle("compact");
+};
+</script>
+</body>
+</html>

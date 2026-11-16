@@ -4,6 +4,9 @@ All notable changes to MyTicker. Versions follow `manifest.json`.
 
 ## Unreleased: production hardening
 
+### Layout measuring tool
+- `npm run check:layout` loads the real extension on 13 local fixture pages and measures overlap with the strip, cut-off, non-uniform shifts, anchors, fullscreen, print, restore and a mutation-burst timing, strip on versus off. It runs inside `npm run smoke` as a ratchet against `test_fixtures/layout/known-failures.json`. Baseline: `docs/layout-baseline-2026-11-16.md`; real sites to check by eye: `docs/layout-test-sites.md`.
+
 ### Build, packaging and docs
 - ESLint (dev-only), lockfile, `.nvmrc`; deterministic store packager (`npm run package`), version-consistency check and sensitive-content scan; CI runs all of them plus `npm audit`.
 - Extension-page CSP now also restricts `connect-src` to the four provider hosts and sets `base-uri`, `form-action` and `frame-src`.

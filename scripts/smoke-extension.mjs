@@ -15,7 +15,8 @@ import { mkdtemp, readFile, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createSessionHelpers, findBrowser, launchBrowser, sleep, waitFor } from "./lib/browser.mjs";
+import { createSessionHelpers, findBrowser, launchBrowser, serveDirectory, sleep, waitFor } from "./lib/browser.mjs";
+import { compareToKnown, runLayoutChecks, summarise } from "./check-layout.mjs";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 
@@ -202,6 +203,22 @@ async function main() {
       return !JSON.stringify(root).includes("pts-ticker-container");
     }, { label: "tape removed after disabling" });
     checks.push("disabling the tape removes it from the page");
+
+    // Layout: every fixture, strip on versus off. Known failures are listed in
+    // test_fixtures/layout/known-failures.json; a new failure, or one that has
+    // been fixed but not removed from the list, fails the smoke test.
+    const fixtureServer = await serveDirectory(join(ROOT, "test_fixtures/layout"));
+    try {
+      const run = await runLayoutChecks({ cdp, helpers, swSession, baseUrl: fixtureServer.url });
+      const { failureKeys, lines } = summarise(run);
+      const { unexpected, fixed } = await compareToKnown(failureKeys);
+      unexpected.forEach((k) => problems.push(`layout: new failure ${k}`));
+      fixed.forEach((k) => problems.push(`layout: ${k} now passes; remove it from test_fixtures/layout/known-failures.json`));
+      if (unexpected.length || fixed.length) lines.forEach((l) => console.log(`       ${l}`));
+      checks.push(`layout check on ${run.cases.length} fixtures: ${failureKeys.length} known failure(s), none new`);
+    } finally {
+      fixtureServer.close();
+    }
   } catch (error) {
     problems.push(`harness: ${error.message}`);
   } finally {

@@ -61,6 +61,8 @@ The gap, confirmed in `contentScript.js`:
   page's layout beyond a uniform shift.
 - **Done when:** the check runs on every fixture and shows today's failures.
 
+- 2026-11-16: done. 13 fixtures in `test_fixtures/layout/`, `npm run check:layout` (also run inside `npm run smoke`, as a ratchet against `known-failures.json`), `docs/layout-test-sites.md` (32 sites), baseline in `docs/layout-baseline-2026-11-16.md` (89 failures). Verified: `npm run check:layout` shows the failures; `npm run smoke` 12/12; 122 unit tests pass.
+
 ### 2. Own the space
 - Shift elements that are fixed or sticky to the top of the window by the strip's height, and
   shrink full-height fixed elements to match. Keep doing so as the page changes (new elements,

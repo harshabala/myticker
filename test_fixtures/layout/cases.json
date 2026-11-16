@@ -1,0 +1,24 @@
+{
+  "viewport": { "width": 1280, "height": 800 },
+  "stages": [
+    { "name": "load", "scrollY": 0 },
+    { "name": "scrolled", "scrollY": 600 },
+    { "name": "stuck", "scrollY": 1600 }
+  ],
+  "cases": [
+    { "id": "fixed-header", "file": "fixed-header.html", "label": "Fixed header at top: 0" },
+    { "id": "sticky-header", "file": "sticky-header.html", "label": "Sticky header at top: 0" },
+    { "id": "fixed-on-scroll", "file": "fixed-on-scroll.html", "label": "Header that becomes fixed after scrolling" },
+    { "id": "fixed-sidebar", "file": "fixed-sidebar.html", "label": "Full-height fixed sidebars and a bottom-fixed note" },
+    { "id": "spa-rerender", "file": "spa-rerender.html", "label": "Single-page app that re-renders its header and changes classes",
+      "actions": ["window.__navigate()", "window.__toggleClasses()", "window.__navigate()"] },
+    { "id": "cookie-banner", "file": "cookie-banner.html", "label": "Top cookie banner" },
+    { "id": "important-top", "file": "important-top.html", "label": "Fixed header using top with !important" },
+    { "id": "shadow-root-header", "file": "shadow-root-header.html", "label": "Header inside an open shadow root" },
+    { "id": "modal-overlay", "file": "modal-overlay.html", "label": "Fixed full-screen modal overlay" },
+    { "id": "fullscreen-video", "file": "fullscreen-video.html", "label": "Fullscreen video element", "fullscreen": "#player" },
+    { "id": "print-stylesheet", "file": "print-stylesheet.html", "label": "Page with a print stylesheet", "print": true },
+    { "id": "long-document", "file": "long-document.html", "label": "Plain long document with in-page anchors", "anchors": ["#s3", "#s7", "#s11"] },
+    { "id": "body-margin-transforms", "file": "body-margin-transforms.html", "label": "Own body margin and transforms" }
+  ]
+}
