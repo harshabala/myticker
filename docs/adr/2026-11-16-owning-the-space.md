@@ -52,14 +52,15 @@ slice), incremental on mutations, and measured at no visible overhead.
 - Performance guard: median of five 1,000-mutation bursts, budget 250 ms absolute and 100 ms
   over the strip-off run (`PERF_BUDGET` in `scripts/check-layout.mjs`), inside `npm run smoke`.
 
-## What still fails
+## Update: reservation moved to the root element's margin
 
-`long-document` (3 shift checks): margins collapse, so when the page's first child has a larger
-top margin than the body, the body margin moves content by less than the strip height (15.3 px
-instead of 36.7 px here). Nothing is under the strip. The exact fix is a margin on `html`
-instead of `body` (the root's margin never collapses), but existing tests in
-`test_fixtures/test_ticker_render.mjs` assert body margin ownership, so that change needs an
-owner decision.
+The first implementation kept the body margin and left `long-document` failing 3 shift checks
+(margin collapse: 15.3 px instead of 36.7 px). The reservation now lives on `html`
+(`margin-top`, inline `!important`, original value restored on exit); the root's margin never
+collapses with a child's margin. Layout check: **0 failures across 13 fixtures**. Assertions in
+`test_fixtures/test_ticker_render.mjs` that said the body margin moves were changed to the root
+margin (and now also assert the body margin is never touched); the smoke test records the root
+margin instead of the body margin.
 
 Not covered: closed shadow roots (unreachable), `position: absolute; top: 0` against the initial
 containing block, and full-viewport app shells with an inner scroller.

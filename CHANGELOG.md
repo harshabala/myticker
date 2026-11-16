@@ -6,6 +6,7 @@ All notable changes to MyTicker. Versions follow `manifest.json`.
 
 ### Fixed
 - **The strip no longer slides under sticky and fixed page headers.** Elements that are `position: fixed` or `sticky` with a `top` are moved down by the strip's height (inline `!important`, restored exactly), full-height fixed panels are shrunk to match, and changes are followed as the page mutates, resizes or changes route. New `tapeLayout.js` content script; no permission changes.
+- The strip now reserves its space with the root element's margin instead of the body's, so the page moves by exactly the strip's height even when the first element has its own top margin (margins no longer collapse into it).
 - The strip and the page's reserved space now go away in fullscreen and while printing.
 - Turning the strip off no longer leaves `--pts-tape-scale`, `--pts-ticker-duration` or an empty `style` attribute on the page.
 

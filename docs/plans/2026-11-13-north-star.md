@@ -79,6 +79,8 @@ The gap, confirmed in `contentScript.js`:
 
 - 2026-11-16: partly done. Approach chosen in `docs/adr/2026-11-16-owning-the-space.md` (per-element, `tapeLayout.js`). Layout check failures 89 -> 3: only `long-document` (margin collapse) remains, a known failure needing an owner decision. Fullscreen and print hide the strip; restore is verified on every fixture; burst guard in the check. Verified: `npm run check:layout`, `npm run smoke` 12/12, 125 tests. Live-site check by the owner is still open.
 
+- 2026-11-16 (later): reservation moved from the `body` margin to the root element's margin; layout check 0 failures on 13 fixtures. Fixed an intermittent smoke failure (the check read the reservation while the bar was still hidden, before its stylesheet loaded; it now waits for the visible strip, and a source test pins reveal-then-reserve in one step). Smoke repeated runs, see CHANGELOG/report.
+
 ### 3. Per-site escape hatch
 - One click in the popup: "hide on this site" and "report a layout problem" (which copies a
   diagnostic with no holdings in it).

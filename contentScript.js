@@ -8,7 +8,6 @@ let isHostTapeExcluded;
 let describeFreshness;
 
 const TICKER_CONTAINER_ID = "pts-ticker-container";
-const ORIGINAL_MARGIN_ATTR = "data-pts-original-margin-top";
 const TAPE_RESERVATION_PROPERTY = "--myticker-tape-reservation";
 // Keep primary selector simple so hosts and tests can resolve it reliably.
 const CHATGPT_DIALOG_SELECTOR = "dialog[open]";
@@ -276,10 +275,13 @@ function isChatGptPage() {
   return hostname === "chatgpt.com" || hostname === "chat.openai.com";
 }
 
-function getOriginalBodyMarginPx(body) {
-  const inlineMargin = Number.parseFloat(snapshotInlineValue(body.style, "margin-top").value);
+// The reservation lives on the root element's margin, not the body's: a root
+// margin never collapses with the first child's margin, so the page moves by
+// exactly the strip's height whatever margins the page has.
+function getOriginalRootMarginPx(root) {
+  const inlineMargin = Number.parseFloat(snapshotInlineValue(root.style, "margin-top").value);
   if (Number.isFinite(inlineMargin)) return inlineMargin;
-  const computedMargin = Number.parseFloat(globalThis.getComputedStyle?.(body).marginTop);
+  const computedMargin = Number.parseFloat(globalThis.getComputedStyle?.(root).marginTop);
   return Number.isFinite(computedMargin) ? computedMargin : 0;
 }
 
@@ -332,23 +334,20 @@ function clearChatGptReservation() {
 
 function applyTapeReservation() {
   if (!tickerBar || !document.body || !tapeStylesReady || tapeSuspended) return;
-  if (tapeReservation?.body && tapeReservation.body !== document.body) clearTapeReservation();
+  const root = document.documentElement;
 
   if (!tapeReservation) {
     tapeReservation = {
-      body: document.body,
-      bodyMarginTop: snapshotInlineValue(document.body.style, "margin-top"),
+      rootMarginTop: snapshotInlineValue(root.style, "margin-top"),
       rootScrollPaddingTop: snapshotInlineValue(document.documentElement.style, "scroll-padding-top"),
       rootReservation: snapshotInlineValue(document.documentElement.style, TAPE_RESERVATION_PROPERTY),
-      bodyHadStyleAttr: document.body.hasAttribute?.("style") ?? true,
-      rootHadStyleAttr: document.documentElement.hasAttribute?.("style") ?? true,
-      originalPx: getOriginalBodyMarginPx(document.body)
+      rootHadStyleAttr: root.hasAttribute?.("style") ?? true,
+      originalPx: getOriginalRootMarginPx(root)
     };
-    document.body.setAttribute(ORIGINAL_MARGIN_ATTR, String(tapeReservation.originalPx));
   }
 
   const height = Math.max(0, Number(tickerBar.getBoundingClientRect?.().height) || 0);
-  document.body.style.setProperty("margin-top", `${tapeReservation.originalPx + height}px`, "important");
+  root.style.setProperty("margin-top", `${tapeReservation.originalPx + height}px`, "important");
   document.documentElement.style.setProperty("scroll-padding-top", `${height}px`, "important");
   document.documentElement.style.setProperty(TAPE_RESERVATION_PROPERTY, `${height}px`, "important");
   applyChatGptReservation(height);
@@ -400,8 +399,7 @@ function queueTapeReconciliation() {
       if (!tickerBar || tapeSuspended) return;
       const reservationDirty = tapeReservationDirty;
       tapeReservationDirty = false;
-      if (tapeReservation?.body !== document.body) {
-        clearTapeReservation();
+      if (!tapeReservation) {
         applyTapeReservation();
         observeTapeReservation();
         observeTapeDocument();
@@ -430,12 +428,8 @@ function clearTapeReservation() {
   pageShifter = null;
   if (!tapeReservation) return;
 
-  const { body, bodyMarginTop, rootScrollPaddingTop, rootReservation, bodyHadStyleAttr, rootHadStyleAttr } = tapeReservation;
-  if (body) {
-    restoreInlineValue(body.style, "margin-top", bodyMarginTop);
-    body.removeAttribute(ORIGINAL_MARGIN_ATTR);
-    if (!bodyHadStyleAttr && body.getAttribute("style") === "") body.removeAttribute("style");
-  }
+  const { rootMarginTop, rootScrollPaddingTop, rootReservation, rootHadStyleAttr } = tapeReservation;
+  restoreInlineValue(document.documentElement.style, "margin-top", rootMarginTop);
   restoreInlineValue(document.documentElement.style, "scroll-padding-top", rootScrollPaddingTop);
   restoreInlineValue(document.documentElement.style, TAPE_RESERVATION_PROPERTY, rootReservation);
   const root = document.documentElement;
@@ -447,7 +441,7 @@ function ensureTickerContainer(animate = false) {
   const hostMounted = document.documentElement.contains?.(tickerHost) ?? tickerHost?.parentNode === document.documentElement;
   if (tickerHost && hostMounted && tickerBar) {
     cancelTickerExit?.();
-    if (tapeReservation?.body !== document.body) {
+    if (!tapeReservation) {
       applyTapeReservation();
       observeTapeReservation();
     }

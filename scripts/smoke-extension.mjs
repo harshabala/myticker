@@ -52,11 +52,11 @@ async function main() {
     const helpers = createSessionHelpers(cdp, { onProblem: (p) => problems.push(p) });
     const { attach, evaluate, findServiceWorker } = helpers;
     const openPage = async (url, label, { width = 1280, height = 800, recordLayout = false } = {}) => {
-      // Every inline body margin-top the page ever gets, from document start.
+      // Every inline margin-top the root element ever gets (the reservation), from document start.
       const initScript = recordLayout ? `
           window.__bodyMargins = [];
           new MutationObserver(() => {
-            const value = document.body?.style.getPropertyValue("margin-top");
+            const value = document.documentElement.style.getPropertyValue("margin-top");
             if (value && window.__bodyMargins[window.__bodyMargins.length - 1] !== value) window.__bodyMargins.push(value);
           }).observe(document, { attributes: true, attributeFilter: ["style"], subtree: true });` : undefined;
       return (await helpers.openPage(url, label, { width, height, initScript })).sessionId;
