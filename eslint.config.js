@@ -4,7 +4,7 @@ import globals from "globals";
 const extensionGlobals = { chrome: "readonly" };
 
 export default [
-  { ignores: ["node_modules/**", "dist/**", "assets/**", "docs/**", ".impeccable/**"] },
+  { ignores: ["node_modules/**", "dist/**", "assets/**", "docs/**", ".impeccable/**", ".claude/**", ".worktrees/**", ".brand-preview/**"] },
   js.configs.recommended,
   {
     // Shipped ES modules (service worker, popup, options, shared libraries).
