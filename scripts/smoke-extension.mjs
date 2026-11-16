@@ -15,7 +15,7 @@ import { mkdtemp, readFile, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createSessionHelpers, findBrowser, launchBrowser, serveDirectory, sleep, waitFor } from "./lib/browser.mjs";
+import { createSessionHelpers, findBrowser, launchBrowser, serveDirectory, sleep, waitFor, waitForVisibleStrip } from "./lib/browser.mjs";
 import { compareToKnown, runLayoutChecks, summarise } from "./check-layout.mjs";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
@@ -168,6 +168,10 @@ async function main() {
       throw new Error(`${error.message}; content script status ${JSON.stringify(status.pts_content_script_status || null)}`);
     });
     checks.push(`tape mounted on a web page (${tape.text.match(/TCS/g).length} TCS label(s))`);
+    // The tape's bar is hidden (and the page reserves nothing) until ticker.css
+    // has loaded, and its text exists before that. Wait for the visible strip:
+    // from then on the page must already be pushed down.
+    await waitForVisibleStrip(cdp, page);
     // The page must be pushed down by the tape, not covered by it.
     // The page must be pushed down by the tape's height, never by an unstyled
     // (stacked, hundreds of px tall) tape while ticker.css is still loading.

@@ -191,3 +191,31 @@ export async function serveDirectory(dir) {
   await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
   return { url: `http://127.0.0.1:${server.address().port}`, close: () => server.close() };
 }
+
+/**
+ * Resolves once the strip is rendered AND visible (its stylesheet has loaded;
+ * until then the bar is `visibility: hidden` and the page reserves nothing).
+ * Returns { top, height } of the bar's border box.
+ */
+export async function waitForVisibleStrip(cdp, sessionId, { timeout = 15_000 } = {}) {
+  await cdp.send("DOM.enable", {}, sessionId).catch(() => {});
+  await cdp.send("CSS.enable", {}, sessionId).catch(() => {});
+  return waitFor(async () => {
+    const { root } = await cdp.send("DOM.getDocument", { depth: -1, pierce: true }, sessionId);
+    let bar = null;
+    const walk = (node) => {
+      const attrs = node.attributes || [];
+      const i = attrs.indexOf("class");
+      if (i >= 0 && attrs[i + 1].split(/\s+/).includes("pts-ticker-bar")) bar = node;
+      (node.children || []).forEach(walk);
+      (node.shadowRoots || []).forEach(walk);
+    };
+    walk(root);
+    if (!bar) return null;
+    const { computedStyle } = await cdp.send("CSS.getComputedStyleForNode", { nodeId: bar.nodeId }, sessionId);
+    if (computedStyle.find((p) => p.name === "visibility")?.value !== "visible") return null;
+    const { model } = await cdp.send("DOM.getBoxModel", { nodeId: bar.nodeId }, sessionId);
+    const height = model.border[7] - model.border[1];
+    return height > 0 ? { top: model.border[1], height } : null;
+  }, { label: "visible strip", timeout, interval: 50 });
+}
