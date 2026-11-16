@@ -12,6 +12,12 @@ const ORIGINAL_MARGIN_ATTR = "data-pts-original-margin-top";
 const TAPE_RESERVATION_PROPERTY = "--myticker-tape-reservation";
 // Keep primary selector simple so hosts and tests can resolve it reliably.
 const CHATGPT_DIALOG_SELECTOR = "dialog[open]";
+const TAPE_OBSERVER_OPTIONS = {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ["open", "class", "style", "hidden"]
+};
 
 /** Closed shadow root kept in-module so host pages cannot scrape holdings DOM. */
 let tickerHost = null;
@@ -22,6 +28,14 @@ let latestStateResolved = false;
 let tickerSettings = null;
 let reducedMotionMq = { matches: false, addEventListener() {} };
 let tapeReservation = null;
+// Moves fixed and sticky page elements down by the strip height (tapeLayout.js).
+let layoutBridge = null;
+let pageShifter = null;
+let tapeReservationDirty = false;
+// Fullscreen and print: the strip hides and the page returns to its own layout.
+let tapeSuspended = false;
+let printingNow = false;
+let printMq = null;
 let tapeResizeObserver = null;
 let tapeDocumentObserver = null;
 let chatgptDialog = null;
@@ -139,10 +153,12 @@ function bootstrap() {
     if (typeof isHostTapeExcluded !== "function") {
       isHostTapeExcluded = () => false;
     }
+    layoutBridge = globalThis.__MYTICKER_LAYOUT__ || null;
     reportLifecycle("loaded");
     if (!extensionContextAlive) return;
     reducedMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     reducedMotionMq.addEventListener("change", onReducedMotionChange);
+    listenForSuspension();
     init();
   } catch (error) {
     reportFatal(error);
@@ -150,6 +166,39 @@ function bootstrap() {
 }
 
 bootstrap();
+
+function shouldSuspendTape() {
+  return Boolean(document.fullscreenElement) || printingNow || Boolean(printMq?.matches);
+}
+
+function listenForSuspension() {
+  try {
+    printMq = window.matchMedia("(print)");
+    printMq.addEventListener("change", () => runSafely(syncTapeSuspension));
+  } catch {
+    printMq = null;
+  }
+  document.addEventListener?.("fullscreenchange", () => runSafely(syncTapeSuspension));
+  window.addEventListener?.("beforeprint", () => { printingNow = true; runSafely(syncTapeSuspension); });
+  window.addEventListener?.("afterprint", () => { printingNow = false; runSafely(syncTapeSuspension); });
+}
+
+/** Hide the strip and give the page back its own layout, or undo that. */
+function syncTapeSuspension() {
+  const suspend = shouldSuspendTape();
+  if (suspend === tapeSuspended) return;
+  tapeSuspended = suspend;
+  if (!tickerHost) return;
+  if (suspend) {
+    clearTapeReservation();
+    tickerHost.style.setProperty("display", "none", "important");
+  } else {
+    tickerHost.style.removeProperty("display");
+    applyTapeReservation();
+    observeTapeReservation();
+    observeTapeDocument();
+  }
+}
 
 function init() {
   if (!extensionContextAlive) return;
@@ -282,7 +331,7 @@ function clearChatGptReservation() {
 }
 
 function applyTapeReservation() {
-  if (!tickerBar || !document.body || !tapeStylesReady) return;
+  if (!tickerBar || !document.body || !tapeStylesReady || tapeSuspended) return;
   if (tapeReservation?.body && tapeReservation.body !== document.body) clearTapeReservation();
 
   if (!tapeReservation) {
@@ -291,6 +340,8 @@ function applyTapeReservation() {
       bodyMarginTop: snapshotInlineValue(document.body.style, "margin-top"),
       rootScrollPaddingTop: snapshotInlineValue(document.documentElement.style, "scroll-padding-top"),
       rootReservation: snapshotInlineValue(document.documentElement.style, TAPE_RESERVATION_PROPERTY),
+      bodyHadStyleAttr: document.body.hasAttribute?.("style") ?? true,
+      rootHadStyleAttr: document.documentElement.hasAttribute?.("style") ?? true,
       originalPx: getOriginalBodyMarginPx(document.body)
     };
     document.body.setAttribute(ORIGINAL_MARGIN_ATTR, String(tapeReservation.originalPx));
@@ -301,6 +352,18 @@ function applyTapeReservation() {
   document.documentElement.style.setProperty("scroll-padding-top", `${height}px`, "important");
   document.documentElement.style.setProperty(TAPE_RESERVATION_PROPERTY, `${height}px`, "important");
   applyChatGptReservation(height);
+  if (layoutBridge) {
+    if (!pageShifter) {
+      pageShifter = layoutBridge.createPageShifter({
+        observeRoot: (root) => tapeDocumentObserver?.observe?.(root, TAPE_OBSERVER_OPTIONS),
+        isOwned: (el) => el === tickerHost || el === chatgptDialog?.element,
+        // Our own style writes are not page changes: drop their records.
+        afterWrite: () => tapeDocumentObserver?.takeRecords?.()
+      });
+    }
+    pageShifter.setHeight(height);
+  }
+  tapeDocumentObserver?.takeRecords?.();
 }
 
 function observeTapeReservation() {
@@ -316,19 +379,17 @@ function observeTapeDocument() {
   tapeDocumentObserver = null;
   if (typeof MutationObserver !== "function" || !document.documentElement) return;
   tapeDocumentObserver = new MutationObserver((records) => runSafely(() => {
+    if (!tickerBar) return;
     const hasRelevantChange = records.some((record) =>
       record.type === "childList" || (record.type === "attributes" && record.attributeName === "open")
     );
-    if (!hasRelevantChange) return;
-    if (!tickerBar) return;
+    const shifterQueued = pageShifter?.noteRecords(records) === true;
+    if (!hasRelevantChange && !shifterQueued) return;
+    if (hasRelevantChange) tapeReservationDirty = true;
     queueTapeReconciliation();
   }));
-  tapeDocumentObserver.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ["open"]
-  });
+  tapeDocumentObserver.observe(document.documentElement, TAPE_OBSERVER_OPTIONS);
+  pageShifter?.reobserve();
 }
 
 function queueTapeReconciliation() {
@@ -336,7 +397,9 @@ function queueTapeReconciliation() {
   tapeReconcileFrame = requestAnimationFrame(() => {
     tapeReconcileFrame = null;
     runSafely(() => {
-      if (!tickerBar) return;
+      if (!tickerBar || tapeSuspended) return;
+      const reservationDirty = tapeReservationDirty;
+      tapeReservationDirty = false;
       if (tapeReservation?.body !== document.body) {
         clearTapeReservation();
         applyTapeReservation();
@@ -344,7 +407,8 @@ function queueTapeReconciliation() {
         observeTapeDocument();
         return;
       }
-      applyTapeReservation();
+      if (reservationDirty) applyTapeReservation();
+      pageShifter?.flush();
     });
   });
 }
@@ -362,15 +426,20 @@ function clearTapeReservation() {
   tapeDocumentObserver?.disconnect();
   tapeDocumentObserver = null;
   clearChatGptReservation();
+  pageShifter?.stop();
+  pageShifter = null;
   if (!tapeReservation) return;
 
-  const { body, bodyMarginTop, rootScrollPaddingTop, rootReservation } = tapeReservation;
+  const { body, bodyMarginTop, rootScrollPaddingTop, rootReservation, bodyHadStyleAttr, rootHadStyleAttr } = tapeReservation;
   if (body) {
     restoreInlineValue(body.style, "margin-top", bodyMarginTop);
     body.removeAttribute(ORIGINAL_MARGIN_ATTR);
+    if (!bodyHadStyleAttr && body.getAttribute("style") === "") body.removeAttribute("style");
   }
   restoreInlineValue(document.documentElement.style, "scroll-padding-top", rootScrollPaddingTop);
   restoreInlineValue(document.documentElement.style, TAPE_RESERVATION_PROPERTY, rootReservation);
+  const root = document.documentElement;
+  if (!rootHadStyleAttr && root.getAttribute("style") === "") root.removeAttribute("style");
   tapeReservation = null;
 }
 
@@ -432,6 +501,8 @@ function ensureTickerContainer(animate = false) {
   // The body can be replaced by SPA navigation between the guard above and an
   // insertBefore call. Appending to the stable document root prevents that
   // race from aborting the content script on sites such as LinkedIn.
+  tapeSuspended = shouldSuspendTape();
+  if (tapeSuspended) tickerHost.style.setProperty("display", "none", "important");
   document.documentElement.appendChild(tickerHost);
   reportLifecycle("mount-success");
 
@@ -741,8 +812,7 @@ function applyTickerSpeed(settings) {
     settings?.tickerStyleConfig?.tickerSpeed ||
     40;
   const value = `${Number(duration)}s`;
-  // Set on host document (inherited) and bar if present
-  document.documentElement.style.setProperty("--pts-ticker-duration", value);
+  // Only on the bar: the page's own root element is never styled by the strip.
   if (tickerBar) {
     tickerBar.style.setProperty("--pts-ticker-duration", value);
   }
@@ -751,7 +821,6 @@ function applyTickerSpeed(settings) {
 function applyTapeSize(settings) {
   const size = normalizeTapeScale(settings?.tickerStyleConfig?.tapeScale);
   const scale = { compact: 0.92, comfortable: 1.08, large: 1.20 }[size];
-  document.documentElement.style.setProperty("--pts-tape-scale", String(scale));
   if (tickerBar) {
     tickerBar.setAttribute("data-tape-size", size);
     tickerBar.style.setProperty("--pts-tape-scale", String(scale));

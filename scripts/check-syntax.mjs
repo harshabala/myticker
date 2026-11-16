@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 // Content scripts are classic scripts; everything else is an ES module.
-const CLASSIC = ["contentShared.js", "contentScript.js"];
+const CLASSIC = ["contentShared.js", "tapeLayout.js", "contentScript.js"];
 const MODULES = [
   "background.js", "shared.js", "popup.js", "options.js", "onboarding.js",
   "csvParser.js", "priceProviders.js", "metrics.js", "vault.js", "diagnostics.js"

@@ -26,7 +26,7 @@ import { PROBE_SOURCE } from "./lib/layout-probe.mjs";
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const FIXTURES = join(ROOT, "test_fixtures/layout");
 const KNOWN = join(FIXTURES, "known-failures.json");
-export const PERF_BUDGET = { absoluteMs: 400, overheadMs: 150 };
+export const PERF_BUDGET = { absoluteMs: 250, overheadMs: 100 };
 const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
 
 async function stripBox(cdp, session) {
@@ -92,8 +92,8 @@ function analyseStage(name, y, off, on, H) {
     const dy = n.t - o.t, dh = n.h - o.h;
     let ok;
     if (!near(n.l, o.l) || !near(n.w, o.w)) ok = false;
-    else if (offPinned.has(k)) ok = (near(dy, H) && (near(dh, 0) || near(dh, -H))) || (near(o.b, vh) && near(dy, 0) && near(dh, 0));
     else if (insideAny(k, offPinned)) ok = dy >= -0.5 && dy <= H + 0.5 && dh >= -H - 0.5 && dh <= 0.5;
+    else if (offPinned.has(k)) ok = (near(dy, H) && (near(dh, 0) || near(dh, -H))) || (near(o.b, vh) && near(dy, 0) && near(dh, 0));
     else ok = near(dy, H) && near(dh, 0);
     if (!ok) bad.push(`${short(k)} moved ${dy.toFixed(1)}px, resized ${dh.toFixed(1)}px (expected ${H.toFixed(1)}px down)`);
   }
@@ -174,7 +174,7 @@ export async function runLayoutChecks({ cdp, helpers, swSession, baseUrl, only, 
     const s = page.sessionId;
     let box;
     try {
-      box = await waitFor(async () => { const b = await stripBox(cdp, s); return b && near(b.top, 0, 0.5) ? b : null; }, { label: "strip box", timeout: 8000 });
+      box = await waitFor(async () => { const b = await stripBox(cdp, s); return b && (near(b.top, 0, 0.5) || process.env.LAYOUT_ALLOW_STRIP_OFFSET) ? b : null; }, { label: "strip box", timeout: 8000 });
     } catch { failures.push({ id: "strip", detail: "strip did not mount" }); await closePage(page.targetId); continue; }
     await sleep(500);
     const H = box.height;

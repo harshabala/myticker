@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
-const SHIPPED = ["background.js", "priceProviders.js", "options.js", "popup.js", "onboarding.js", "shared.js", "metrics.js", "vault.js", "csvParser.js", "contentScript.js", "contentShared.js"];
+const SHIPPED = ["background.js", "priceProviders.js", "options.js", "popup.js", "onboarding.js", "shared.js", "metrics.js", "vault.js", "csvParser.js", "contentScript.js", "contentShared.js", "tapeLayout.js"];
 
 test("every remote host in shipped code is declared, and every declared host is used", async () => {
   const manifest = JSON.parse(await read("manifest.json"));

@@ -4,6 +4,11 @@ All notable changes to MyTicker. Versions follow `manifest.json`.
 
 ## Unreleased: production hardening
 
+### Fixed
+- **The strip no longer slides under sticky and fixed page headers.** Elements that are `position: fixed` or `sticky` with a `top` are moved down by the strip's height (inline `!important`, restored exactly), full-height fixed panels are shrunk to match, and changes are followed as the page mutates, resizes or changes route. New `tapeLayout.js` content script; no permission changes.
+- The strip and the page's reserved space now go away in fullscreen and while printing.
+- Turning the strip off no longer leaves `--pts-tape-scale`, `--pts-ticker-duration` or an empty `style` attribute on the page.
+
 ### Layout measuring tool
 - `npm run check:layout` loads the real extension on 13 local fixture pages and measures overlap with the strip, cut-off, non-uniform shifts, anchors, fullscreen, print, restore and a mutation-burst timing, strip on versus off. It runs inside `npm run smoke` as a ratchet against `test_fixtures/layout/known-failures.json`. Baseline: `docs/layout-baseline-2026-11-16.md`; real sites to check by eye: `docs/layout-test-sites.md`.
 

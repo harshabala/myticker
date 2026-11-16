@@ -26,7 +26,7 @@ export default [
   },
   {
     // Content scripts are classic scripts injected into web pages.
-    files: ["contentShared.js", "contentScript.js"],
+    files: ["contentShared.js", "tapeLayout.js", "contentScript.js"],
     languageOptions: {
       sourceType: "script",
       globals: { ...globals.browser, ...extensionGlobals }
