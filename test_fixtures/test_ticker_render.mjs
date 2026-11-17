@@ -275,5 +275,14 @@ assert(document.documentElement.style.getPropertyValue("scroll-padding-top") ===
 assert(document.documentElement.style.getPropertyPriority("margin-top") === "important" && document.documentElement.style.getPropertyPriority("scroll-padding-top") === "important" && document.documentElement.style.getPropertyPriority("--myticker-tape-reservation") === "important", "restores inline reservation priorities exactly");
 assert(Boolean(resizeObserver?.disconnected) && Boolean(documentObserver?.disconnected), "cleans up the dialog adapter and both observers when disabled");
 
+console.log("\n⏱ hiding the tape before its entrance frame runs");
+const entranceFrames = [];
+globalThis.requestAnimationFrame = (callback) => { entranceFrames.push(callback); return entranceFrames.length; };
+settingsChangeListener({ pts_settings: { newValue: { enabled: true } } }, "sync");
+settingsChangeListener({ pts_settings: { newValue: { enabled: false } } }, "sync");
+let entranceThrew = false;
+try { for (const frame of entranceFrames) frame(); } catch { entranceThrew = true; }
+assert(!entranceThrew, "a queued entrance frame does not throw after the tape was removed");
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

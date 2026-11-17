@@ -85,6 +85,13 @@
       }
 
       /* ── Tabs ── */
+      .site-actions { padding: 8px 12px 12px; border-top: 1px solid var(--border, rgba(127, 127, 127, 0.25)); }
+      .site-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+      .site-btn { font: inherit; font-size: 12px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border, rgba(127, 127, 127, 0.4)); background: transparent; color: inherit; cursor: pointer; }
+      .site-btn:disabled { opacity: 0.5; cursor: default; }
+      .site-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+      .site-status { margin: 6px 0 0; font-size: 12px; opacity: 0.8; min-height: 1em; }
+      .site-report { width: 100%; box-sizing: border-box; margin-top: 6px; font: 11px/1.4 ui-monospace, monospace; }
       .tabs {
         display: flex;
         gap: 0;
@@ -517,6 +524,14 @@
       <div id="panelHoldings" role="tabpanel" aria-labelledby="tabHoldings"></div>
       <div id="panelWatchlist" role="tabpanel" aria-labelledby="tabWatchlist" hidden></div>
     </div>
+    <section class="site-actions" id="siteActions" aria-label="This site">
+      <div class="site-buttons">
+        <button type="button" class="site-btn" id="hideSiteButton" disabled>Hide on this site</button>
+        <button type="button" class="site-btn" id="reportLayoutButton" disabled>Report a layout problem</button>
+      </div>
+      <p class="site-status" id="siteStatus" role="status"></p>
+      <textarea id="layoutReport" class="site-report" readonly rows="6" aria-label="Layout report (site name and layout numbers only)" hidden></textarea>
+    </section>
     <script type="module" src="popup.js"></script>
   </body>
 </html>

@@ -86,6 +86,8 @@ The gap, confirmed in `contentScript.js`:
   diagnostic with no holdings in it).
 - **Done when:** both work and are covered by the smoke test.
 
+- 2026-11-16: done. Popup has "Hide on this site" (toggles to "Show on this site"; adds the host to the Appearance exclusion list) and "Report a layout problem" (shows and copies a report of host, viewport, strip state and moved-element counts only). The popup asks the page's content script for its host, so no permission was added. Verified by three new smoke checks, including that the report contains no symbols or amounts, and by the 20-run smoke loop in the report.
+
 ### 4. Live truth
 - Run against live prices with a real key through a market open and close. Check staleness marks,
   rate-limit backoff and the closed-market state.

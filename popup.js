@@ -2,7 +2,8 @@ import {
   STORAGE_KEYS,
   formatSignedCurrency,
   describeFreshness,
-  inferDisplayCurrency
+  inferDisplayCurrency,
+  normalizeExcludedSites
 } from "./shared.js";
 import { getSetupStatus, markWizardStep, setOnboarding } from "./onboarding.js";
 
@@ -28,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.sync.get([STORAGE_KEYS.settings], (data) => {
     applyPopupTheme(data[STORAGE_KEYS.settings]?.tickerStyleConfig?.theme);
   });
+
+  initSiteActions();
 
   openOptions?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -677,4 +680,92 @@ function formatWatchlistAssetLabel(item = {}) {
   if (exchange === "INDEX") return "Index · USD";
   if (exchange === "ETF") return "ETF · USD";
   return `US${exchange ? ` · ${exchange}` : ""} · USD`;
+}
+
+
+// --- Per-site escape hatch -------------------------------------------------
+// The popup asks the content script in the page it was opened over for its host
+// name; no tab URL is read, so no extra permission is needed. "Hide on this
+// site" adds that host to the Appearance exclusion list. The layout report is
+// built in the page and holds the site name and layout numbers only.
+
+async function getTargetTabId() {
+  const fromQuery = new URLSearchParams(globalThis.location.search).get("tab");
+  if (/^\d+$/.test(fromQuery || "")) return Number(fromQuery);
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab?.id ?? null;
+}
+
+async function askPage(tabId, type) {
+  if (tabId == null) return null;
+  try {
+    return (await chrome.tabs.sendMessage(tabId, { type })) || null;
+  } catch {
+    return null; // not a web page, or the page has no MyTicker script
+  }
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function initSiteActions() {
+  const hideButton = document.getElementById("hideSiteButton");
+  const reportButton = document.getElementById("reportLayoutButton");
+  const status = document.getElementById("siteStatus");
+  const reportBox = document.getElementById("layoutReport");
+  if (!hideButton || !reportButton || !status) return;
+
+  const tabId = await getTargetTabId();
+  const info = await askPage(tabId, "myticker-site-info");
+  const host = String(info?.hostname || "").toLowerCase();
+  if (!host) {
+    status.textContent = "Open a web page to hide MyTicker on it or report a layout problem.";
+    return;
+  }
+
+  const readExcluded = async () => {
+    const data = await chrome.storage.sync.get([STORAGE_KEYS.settings]);
+    const settings = data[STORAGE_KEYS.settings] || {};
+    return { settings, excluded: normalizeExcludedSites(settings.excludedSites) };
+  };
+  const hostKey = normalizeExcludedSites([host])[0] || host;
+  const refresh = async () => {
+    const { excluded } = await readExcluded();
+    const hidden = excluded.includes(hostKey);
+    hideButton.textContent = hidden ? "Show on this site" : "Hide on this site";
+    hideButton.dataset.hidden = hidden ? "1" : "0";
+    status.textContent = hidden ? `MyTicker is hidden on ${hostKey}.` : "";
+  };
+  hideButton.disabled = false;
+  reportButton.disabled = false;
+  await refresh();
+
+  hideButton.addEventListener("click", async () => {
+    const { settings, excluded } = await readExcluded();
+    const next = hideButton.dataset.hidden === "1"
+      ? excluded.filter((entry) => entry !== hostKey)
+      : normalizeExcludedSites([...excluded, hostKey]);
+    await chrome.storage.sync.set({ [STORAGE_KEYS.settings]: { ...settings, excludedSites: next } });
+    await refresh();
+  });
+
+  reportButton.addEventListener("click", async () => {
+    const reply = await askPage(tabId, "myticker-layout-diagnostic");
+    if (!reply?.report) {
+      status.textContent = "Could not read this page. Reload it and try again.";
+      return;
+    }
+    reportBox.value = reply.report;
+    reportBox.hidden = false;
+    const copied = await copyText(reply.report);
+    status.textContent = copied
+      ? "Copied. It holds the site name and layout numbers only, nothing from your portfolio."
+      : "Select and copy the report below. It holds the site name and layout numbers only.";
+  });
 }

@@ -158,6 +158,7 @@ function bootstrap() {
     reducedMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     reducedMotionMq.addEventListener("change", onReducedMotionChange);
     listenForSuspension();
+    listenForPopup();
     init();
   } catch (error) {
     reportFatal(error);
@@ -165,6 +166,40 @@ function bootstrap() {
 }
 
 bootstrap();
+
+/**
+ * The popup asks the page it was opened over for its host name and a layout
+ * diagnostic. Nothing here reads page content, holdings, symbols or amounts.
+ */
+function buildLayoutDiagnostic() {
+  const root = document.documentElement;
+  const barHeight = Math.round((Number(tickerBar?.getBoundingClientRect?.().height) || 0) * 10) / 10;
+  let version = "unknown";
+  try { version = chrome.runtime.getManifest().version; } catch { /* keep unknown */ }
+  return [
+    "MyTicker layout report",
+    `version: ${version}`,
+    `host: ${globalThis.location?.hostname || "unknown"}`,
+    `viewport: ${globalThis.innerWidth}x${globalThis.innerHeight}`,
+    `strip: ${tickerBar && !tapeSuspended ? "shown" : "not shown"}, height ${barHeight}px`,
+    `suspended (fullscreen or print): ${tapeSuspended ? "yes" : "no"}`,
+    `page offset (root margin-top): ${root.style.getPropertyValue("margin-top") || "none"}`,
+    `fixed or sticky elements moved: ${pageShifter?.trackedCount ?? 0}`,
+    `frames: ${globalThis.frames?.length ?? 0}`,
+    `shadow roots seen: ${pageShifter?.rootCount ?? 0}`
+  ].join("\n");
+}
+
+function listenForPopup() {
+  chrome.runtime.onMessage?.addListener((message, sender, sendResponse) => {
+    if (sender?.id !== chrome.runtime.id) return;
+    if (message?.type === "myticker-site-info") {
+      sendResponse({ hostname: globalThis.location?.hostname || "" });
+    } else if (message?.type === "myticker-layout-diagnostic") {
+      sendResponse({ report: buildLayoutDiagnostic() });
+    }
+  });
+}
 
 function shouldSuspendTape() {
   return Boolean(document.fullscreenElement) || printingNow || Boolean(printMq?.matches);
@@ -507,8 +542,10 @@ function ensureTickerContainer(animate = false) {
   observeTapeDocument();
 
   if (!prefersReducedMotion() && animate) {
+    const enteringBar = tickerBar;
     requestAnimationFrame(() => {
-      tickerBar.classList.add("pts-ticker-visible");
+      // The strip can be hidden (popup, keyboard) before this frame runs.
+      if (tickerBar === enteringBar) enteringBar.classList.add("pts-ticker-visible");
     });
   }
 

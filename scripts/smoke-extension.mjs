@@ -208,6 +208,35 @@ async function main() {
     }, { label: "tape removed after disabling" });
     checks.push("disabling the tape removes it from the page");
 
+    // Per-site escape hatch from the popup: hide on this site, show again, and
+    // a layout report that holds no holdings, symbols or amounts.
+    await evaluate(swSession, "chrome.storage.sync.set({ pts_settings: { enabled: true } }).then(() => true)");
+    await waitForVisibleStrip(cdp, page);
+    const pageTabId = await evaluate(swSession, `chrome.tabs.query({}).then(async (tabs) => {
+      for (const t of tabs) {
+        try { const r = await chrome.tabs.sendMessage(t.id, { type: "myticker-site-info" }); if (r && r.hostname === "127.0.0.1") return t.id; } catch { /* not a web page */ }
+      }
+      return null;
+    })`);
+    if (pageTabId == null) throw new Error("escape hatch: no tab with the MyTicker content script");
+    const sitePopup = await openPage(`chrome-extension://${extensionId}/popup.html?tab=${pageTabId}`, "popup (site actions)", { width: 380, height: 600 });
+    await waitFor(() => evaluate(sitePopup, "!document.getElementById('hideSiteButton').disabled"), { label: "site actions enabled" });
+    const stripGone = async () => !JSON.stringify((await cdp.send("DOM.getDocument", { depth: -1, pierce: true }, page)).root).includes("pts-ticker-container");
+    await evaluate(sitePopup, "document.getElementById('hideSiteButton').click(), true");
+    await waitFor(async () => (await stripGone()) && /Show on this site/.test(await evaluate(sitePopup, "document.getElementById('hideSiteButton').textContent")), { label: "strip hidden on this site" });
+    const excludedSites = (await evaluate(swSession, "chrome.storage.sync.get('pts_settings')")).pts_settings?.excludedSites;
+    if (!excludedSites?.includes("127.0.0.1")) problems.push(`popup: hide on this site did not add the host (${JSON.stringify(excludedSites)})`);
+    else checks.push("popup \"hide on this site\" removes the strip and adds the host to the exclusion list");
+    await evaluate(sitePopup, "document.getElementById('hideSiteButton').click(), true");
+    await waitForVisibleStrip(cdp, page);
+    checks.push("popup \"show on this site\" brings the strip back");
+    await evaluate(sitePopup, "document.getElementById('reportLayoutButton').click(), true");
+    const layoutReport = await waitFor(() => evaluate(sitePopup, "document.getElementById('layoutReport').value"), { label: "layout report" });
+    if (!/host: 127\.0\.0\.1/.test(layoutReport) || !/strip: shown/.test(layoutReport)) problems.push(`popup: layout report is missing host or strip state: ${layoutReport}`);
+    else if (/TCS|RELIANCE|HDFCBANK|INFY|bitcoin|[₹$]\s?\d|quantity|holding/i.test(layoutReport)) problems.push("popup: layout report contains holdings, symbols or amounts");
+    else checks.push("popup \"report a layout problem\" builds a report with the host and layout numbers only");
+    await helpers.closePage((await cdp.send("Target.getTargets")).targetInfos.find((t) => t.url.includes("popup.html?tab="))?.targetId);
+
     // Layout: every fixture, strip on versus off. Known failures are listed in
     // test_fixtures/layout/known-failures.json; a new failure, or one that has
     // been fixed but not removed from the list, fails the smoke test.

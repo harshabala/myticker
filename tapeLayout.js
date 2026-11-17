@@ -244,7 +244,8 @@
       /** The content script replaced its observer: attach it to known shadow roots again. */
       reobserve() { for (const root of seenRoots) observeRoot(root); },
       stop,
-      get trackedCount() { return tracked.size; }
+      get trackedCount() { return tracked.size; },
+      get rootCount() { return seenRoots.size; }
     };
   }
 
