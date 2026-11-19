@@ -98,6 +98,7 @@ The gap, confirmed in `contentScript.js`:
 - Apply `DESIGN.md` and `brand.md`: the strip's motion, hover detail, and a pause on hover.
   Respect reduced motion. Break up `options.js` and `options.html` as the October plan described.
 - **Done when:** the owner accepts a screen recording on three sites.
+- 2026-11-19, Antigravity: fixed smoke test profile race (20/20 loop passed). Confirmed 13 layout fixtures pass with empty known-failures.json. Added spacebar keyboard pause toggle on tape, hover highlight, and verified reduced-motion.
 
 ### 6. Ship
 - Store listing, screenshots without real holdings, privacy policy page, a tagged release.

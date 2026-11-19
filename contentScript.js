@@ -621,6 +621,16 @@ function getTickerParts(container) {
     scrollWrapper.setAttribute("tabindex", "0");
     scrollWrapper.setAttribute("role", "group");
     scrollWrapper.setAttribute("aria-label", "Market tape. Focus pauses scrolling.");
+    scrollWrapper.addEventListener("keydown", (e) => {
+      if (e.code === "Space" || e.key === " ") {
+        e.preventDefault();
+        const isPaused = scrollWrapper.classList.toggle("pts-tape-paused");
+        scrollWrapper.setAttribute(
+          "aria-label",
+          isPaused ? "Market tape. Paused by spacebar." : "Market tape. Focus pauses scrolling."
+        );
+      }
+    });
     const scrollInner = document.createElement("div");
     scrollInner.className = "pts-scroll-inner";
     scrollWrapper.appendChild(scrollInner);

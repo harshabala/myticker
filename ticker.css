@@ -163,6 +163,15 @@
   padding: 0 calc(12px * var(--pts-tape-scale));
   border-right: 1px solid var(--pts-border, rgba(255, 255, 255, 0.08));
   cursor: default;
+  transition: background var(--motion-fast) var(--ease-out);
+}
+
+.pts-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pts-ticker-bar[data-theme="light"] .pts-item:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .pts-group-marker {
@@ -207,8 +216,9 @@
   animation-play-state: paused;
 }
 
-.pts-scroll-wrapper:focus-within .pts-scroll-inner:not(.pts-scroll-static) {
-  animation-play-state: paused;
+.pts-scroll-wrapper:focus-within .pts-scroll-inner:not(.pts-scroll-static),
+.pts-scroll-wrapper.pts-tape-paused .pts-scroll-inner:not(.pts-scroll-static) {
+  animation-play-state: paused !important;
 }
 
 .pts-scroll-wrapper:focus-visible {

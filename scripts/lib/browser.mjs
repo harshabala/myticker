@@ -114,8 +114,20 @@ export async function launchBrowser({ browserPath, extensionDir, width = 1280, h
     async close() {
       cdp.close();
       browser.kill();
-      await sleep(300);
-      await rm(profile, { recursive: true, force: true });
+      if (browser.exitCode === null && browser.signalCode === null) {
+        await new Promise((resolve) => {
+          browser.once("exit", resolve);
+          setTimeout(resolve, 2000);
+        });
+      }
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          await rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+          break;
+        } catch {
+          await sleep(200);
+        }
+      }
     }
   };
 }

@@ -54,7 +54,12 @@ class Element extends EventTarget {
     this.classList = {
       add: (...names) => { this.className = `${this.className} ${names.join(" ")}`.trim(); },
       remove: (...names) => { this.className = this.className.split(/\s+/).filter((name) => !names.includes(name)).join(" "); },
-      toggle: (name, force) => { if (force) this.classList.add(name); else this.classList.remove(name); }
+      toggle: (name, force) => {
+        const has = this.className.split(/\s+/).includes(name);
+        const shouldAdd = typeof force === "boolean" ? force : !has;
+        if (shouldAdd) this.classList.add(name); else this.classList.remove(name);
+        return shouldAdd;
+      }
     };
   }
   appendChild(child) { child.parentNode = this; this.children.push(child); return child; }
@@ -283,6 +288,18 @@ settingsChangeListener({ pts_settings: { newValue: { enabled: false } } }, "sync
 let entranceThrew = false;
 try { for (const frame of entranceFrames) frame(); } catch { entranceThrew = true; }
 assert(!entranceThrew, "a queued entrance frame does not throw after the tape was removed");
+
+console.log("\n⌨️ keyboard spacebar pauses and unpauses scrolling");
+settingsChangeListener({ pts_settings: { newValue: { enabled: true } } }, "sync");
+const currentHost = document.documentElement.children.find((child) => child.id === "pts-ticker-container");
+const currentBar = currentHost?.shadowRootForTest?.children.find((child) => child.className.includes("pts-ticker-bar"));
+const wrapper = currentBar?._ptsParts?.scrollWrapper;
+assert(Boolean(wrapper), "scroll wrapper exists in tape");
+wrapper.dispatchEvent({ type: "keydown", code: "Space", key: " ", preventDefault() {} });
+assert(wrapper.className.includes("pts-tape-paused"), "spacebar adds pts-tape-paused class");
+assert(wrapper.getAttribute("aria-label").includes("Paused by spacebar"), "aria-label announces paused state");
+wrapper.dispatchEvent({ type: "keydown", code: "Space", key: " ", preventDefault() {} });
+assert(!wrapper.className.includes("pts-tape-paused"), "second spacebar removes pts-tape-paused class");
 
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);
