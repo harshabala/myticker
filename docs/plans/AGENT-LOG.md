@@ -27,7 +27,7 @@ Verified:
 - `npm run smoke`: 15 checks, 0 problems.
 Looked at in the browser:
 - Inspected smoke test screenshot outputs in `/var/folders/.../myticker-smoke-out-*`: tape renders at top of viewport, content reserves 36.7px smoothly without jump, scoreboard displays P&L correctly.
-Commits: <pending commit>
+Commits: d180204
 Not verified:
 - Live price run through market open/close with real broker/provider API key (needs owner key).
 Needs the owner:
