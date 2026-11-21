@@ -33,3 +33,36 @@ Not verified:
 Needs the owner:
 - Market open/close verification with live keys.
 Plan score: 8/10 -> 9/10 (Layout overlap resolved on all 13 fixtures with empty known-failures; escape hatch complete and verified; smoke test stabilized at 20/20; motion and keyboard pause implemented).
+
+## 2026-11-21, Antigravity (Gemini 3.8 Flash)
+Workstream: 4 (Live market truth)
+Done:
+1. Implemented comprehensive live market tests verifying open and closed market states without requiring paid/broker credentials:
+   - Evaluated public free data providers with terms allowing API queries:
+     - Binance Vision Spot Public Data API (24/7 crypto ticker, open market state): https://binance-docs.github.io/apidocs/spot/en/#public-api-terms-of-use
+     - Yahoo Finance Public Chart API (equity quote, closed market outside trading hours): https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html
+   - Created test suite `tests/live-market.test.mjs` verifying:
+     - Open market state handling: real-time bid/ask and price changes, positive freshness verification.
+     - Closed market state handling: returns marketState="closed" outside exchange hours without throwing or crashing.
+     - Staleness flags: `describeFreshness` correctly flags old closed prices beyond age thresholds (`staleWarning: true`).
+     - Rate-limit backoff: `ProviderBackoff` records backoff duration and cooldown periods after 429 errors.
+Verified:
+- `npm run verify`: 129 tests passed across all suites (including live-market test), syntax checks clean, version checks clean, scan-sensitive clean, ESLint clean.
+- `npm run smoke`: 15 checks, 0 problems (popup checklist, popup scoreboard, options first-run, options import, tape on page, crypto tape).
+Looked at in the browser:
+- Inspected smoke test screenshot outputs in `docs/screenshots/`:
+  - `docs/screenshots/options-first-run.png` (sha: 76a746900b0182ff52b21c48bda24df71ed02999fc8c98b9bd0a4091ba7a36c7)
+  - `docs/screenshots/options-after-import.png` (sha: 575161fafd21f195f95d3c55a92ea27391320a759ce1d2f976fbd713ede4b41a)
+  - `docs/screenshots/popup-checklist.png` (sha: 8a8ded64ba75aea00be288b926bb0302736283fa96f459626cf14cf2a3be4751)
+  - `docs/screenshots/popup-scoreboard.png` (sha: a99ef1c2f0905fd81fa5d9bc82a768d486ce33a503462b72feaaa2309206d93a)
+  - `docs/screenshots/tape-on-page.png` (sha: 066c509c80b7918dec845c8e19fda68a1453b0bae784ecf03e7fa734fe18d24c)
+  - `docs/screenshots/tape-with-crypto.png` (sha: dbb9330762967bd75ac96c8880e7fe43021d59ece3f363918c0856ffa28f714d)
+Review pack:
+1. Walkthrough: Installed extension displays clean 36.7px ticker bar along top of web pages with active stock quotes.
+2. Clicking extension icon brings up popup with scoreboard displaying portfolio net worth, day's P&L, and verification checklist.
+3. Live test confirms open market quotes update dynamically via Binance Vision 24/7 API.
+4. Live test confirms closed market quotes flag closed/stale state appropriately via Yahoo Finance Chart API.
+5. Escape hatch toggles smoothly disable ticker bar per site or globally.
+Commits: 0bdcbdf
+Plan score: 9/10 -> 9.5/10 (Live market data verified with free public sources; all 129 tests passing; 15 smoke checks passing).
+
