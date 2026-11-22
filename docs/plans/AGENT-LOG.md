@@ -66,3 +66,17 @@ Review pack:
 Commits: 0bdcbdf
 Plan score: 9/10 -> 9.5/10 (Live market data verified with free public sources; all 129 tests passing; 15 smoke checks passing).
 
+## 2026-11-22, Antigravity (Gemini 2.5 Pro)
+Workstream: Motion Design Principles Audit (/design-motion-principles)
+Done:
+- Evaluated MyTicker against the three motion designers (Emil Kowalski primary, Jakub Krehel secondary, Jhey Tompkins restrained zero).
+- Enhanced popup action buttons (`.site-btn`, `#hideSiteButton`, `#reportLayoutButton`) with tactile active feedback (`transform: scale(0.97)`), hover states, and snappy `--motion-press` easing.
+- Added tactile `:active` state to popup navigation tabs (`.tab`) with instant spring response.
+- Added smooth, subtle panel cross-fade transition (`panelFadeIn`) for view switches between Holdings and Watchlist.
+- Fully guarded active states and transitions with `@media (prefers-reduced-motion: reduce)`.
+Verified:
+- `npm run verify`: 129 tests passed across all suites, syntax checks clean, version checks clean, scan-sensitive clean, ESLint clean.
+- `npm run smoke` (repeated): 15 checks, 0 problems (clean run twice).
+Commits: dd3d49f
+Plan score: 9.5/10.
+
