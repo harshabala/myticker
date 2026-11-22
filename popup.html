@@ -87,7 +87,24 @@
       /* ── Tabs ── */
       .site-actions { padding: 8px 12px 12px; border-top: 1px solid var(--border, rgba(127, 127, 127, 0.25)); }
       .site-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-      .site-btn { font: inherit; font-size: 12px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border, rgba(127, 127, 127, 0.4)); background: transparent; color: inherit; cursor: pointer; }
+      .site-btn {
+        font: inherit;
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border, rgba(127, 127, 127, 0.4));
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        transition: transform var(--motion-press) var(--ease-press), background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out);
+      }
+      .site-btn:hover:not(:disabled) {
+        background: var(--bg-hover);
+        border-color: var(--border-focus);
+      }
+      .site-btn:active:not(:disabled) {
+        transform: scale(0.97);
+      }
       .site-btn:disabled { opacity: 0.5; cursor: default; }
       .site-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
       .site-status { margin: 6px 0 0; font-size: 12px; opacity: 0.8; min-height: 1em; }
@@ -109,9 +126,10 @@
         font-family: inherit;
         cursor: pointer;
         position: relative;
-        transition: color var(--motion-fast) var(--ease-out);
+        transition: color var(--motion-fast) var(--ease-out), transform var(--motion-press) var(--ease-press);
       }
       .tab:hover { color: var(--text-secondary); }
+      .tab:active { transform: scale(0.98); }
       .tab[aria-selected="true"] {
         color: var(--text-primary);
       }
@@ -128,6 +146,15 @@
       .tab:focus-visible {
         outline: 2px solid var(--brand-gold);
         outline-offset: -2px;
+      }
+
+      #panelHoldings:not([hidden]),
+      #panelWatchlist:not([hidden]) {
+        animation: panelFadeIn var(--motion-fast) var(--ease-out);
+      }
+      @keyframes panelFadeIn {
+        from { opacity: 0; transform: translateY(2px); }
+        to { opacity: 1; transform: translateY(0); }
       }
 
       /* ── Hero card ── */
@@ -486,7 +513,11 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .icon-btn:active { transform: none; }
+        .icon-btn:active,
+        .site-btn:active,
+        .tab:active { transform: none; }
+        #panelHoldings:not([hidden]),
+        #panelWatchlist:not([hidden]) { animation: none; }
       }
 
       @media (prefers-contrast: more) {
