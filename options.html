@@ -402,7 +402,7 @@
         width: 60px;
         height: 12px;
         background: var(--bg-hover);
-        border-radius: 4px;
+        border-radius: var(--radius-sm, 8px);
         vertical-align: middle;
         opacity: 0.7;
       }
@@ -454,7 +454,7 @@
       .toggle-switch input:focus-visible + .toggle-slider {
         outline: 2px solid var(--brand-gold);
         outline-offset: 2px;
-        border-radius: 11px;
+        border-radius: var(--radius, 12px);
       }
 
       .wizard-step {
@@ -1225,7 +1225,7 @@
         letter-spacing: 0;
         text-transform: none;
         padding: 3px 8px;
-        border-radius: 4px;
+        border-radius: var(--radius-sm, 8px);
         flex-shrink: 0;
         margin-top: 1px;
       }
@@ -1257,7 +1257,7 @@
         padding: 4px;
         display: flex;
         align-items: center;
-        border-radius: 4px;
+        border-radius: var(--radius-sm, 8px);
         transition: color 0.15s ease;
       }
       .input-eye-btn:hover { color: var(--text-primary); }
@@ -1436,7 +1436,7 @@
       .page-header img {
         width: 44px;
         height: 44px;
-        border-radius: 11px;
+        border-radius: var(--radius, 12px);
       }
       .page-header-text h1 {
         font-size: 1.625rem;
@@ -1491,7 +1491,7 @@
         display: grid;
         place-items: center;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: var(--radius, 12px);
         color: var(--text-secondary);
         background: var(--bg-inset);
         font-size: 18px;
@@ -2014,7 +2014,7 @@
         min-height: 24px;
         padding: 0 8px;
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: var(--radius-sm, 8px);
         background: var(--bg-inset);
         color: var(--text-secondary);
         font-size: .6875rem;
@@ -2858,7 +2858,7 @@
         <div class="card">
           <ul class="tips-list">
             <li><strong>India-first:</strong> Import a Zerodha / Groww / Upstox holdings CSV on the <strong>Portfolio</strong> tab. NSE/BSE symbols get <code style="color: var(--text-secondary);">.NS</code> / <code style="color: var(--text-secondary);">.BO</code> and price automatically via Yahoo — no API key.</li>
-            <li><strong>Toggle the Ticker Tape:</strong> Press <kbd id="tipsShortcut" style="background: var(--bg-hover); padding: 2px 6px; border-radius: 3px; font-family: inherit; font-size: var(--text-meta); border: 1px solid var(--border);">Ctrl+Shift+Y</kbd>, or use Appearance → Show Ticker Tape. Open the popup for your day P&amp;L summary.</li>
+            <li><strong>Toggle the Ticker Tape:</strong> Press <kbd id="tipsShortcut" style="background: var(--bg-hover); padding: 2px 6px; border-radius: var(--radius-sm, 8px); font-family: inherit; font-size: var(--text-meta); border: 1px solid var(--border);">Ctrl+Shift+Y</kbd>, or use Appearance → Show Ticker Tape. Open the popup for your day P&amp;L summary.</li>
             <li><strong>Pause scroll:</strong> Hover the ticker strip to freeze it while you read a symbol.</li>
             <li><strong>Re-import</strong> whenever your broker holdings change — import merges/replaces the stored portfolio on this device.</li>
           </ul>

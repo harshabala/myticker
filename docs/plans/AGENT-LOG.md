@@ -147,3 +147,13 @@ Verified:
 - `npm test`: 129 passed across all suites.
 Commits: fix(impeccable): add visual ambient tape strip preview to first-run popup
 
+## 2026-11-23 (Follow-up), Antigravity (Gemini 3.8 Flash)
+Workstream: Impeccable Audit Fixes
+Finding: Tier 3 - Off-Ramp Border Radii Normalization (options.html, popup.html)
+Done:
+- Normalized arbitrary radii (`2px`, `3px`, `4px`, `5px`, `6px`, `10px`, `11px`) across `options.html` and `popup.html` to DESIGN.md tokens: `--radius-sm` (8px) for badges, chips, buttons, kbd and icons; `--radius` (12px) for cards, section intro marks, and grouped surfaces.
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+- `npm test`: 129 passed across all suites.
+Commits: fix(impeccable): normalize off-ramp border radii to design tokens
+
