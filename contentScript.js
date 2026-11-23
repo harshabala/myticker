@@ -498,7 +498,7 @@ function ensureTickerContainer(animate = false) {
   tickerHost = document.createElement("div");
   tickerHost.id = TICKER_CONTAINER_ID;
   tickerHost.setAttribute("data-myticker", "1");
-  tickerHost.style.cssText = "all:initial;position:fixed;top:0;left:0;width:0;height:0;overflow:visible;z-index:2147483000;pointer-events:none;";
+  tickerHost.style.cssText = "all:initial;position:fixed;top:0;left:0;width:0;height:0;overflow:visible;z-index:2147483647;pointer-events:none;";
 
   tickerShadow = tickerHost.attachShadow({ mode: "closed" });
 
