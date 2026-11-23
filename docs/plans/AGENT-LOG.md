@@ -113,3 +113,15 @@ Verified:
 - `npm test`: 129 passed across all suites.
 Commits: fix(impeccable): map raw hex colors in ticker.css to semantic custom properties
 
+## 2026-11-23 (Follow-up), Antigravity (Gemini 3.8 Flash)
+Workstream: Impeccable Audit Fixes
+Finding: Tier 2 - Currency & Precision Overflow in Popup (popup.js:336,528, popup.html:204)
+Done:
+- Added dynamic font-size scaling classes (`.is-long` at 1.35rem, `.is-extra-long` at 1.15rem) for 8+ digit portfolio balances and fractional cryptos.
+- Enabled `.pnl-row` wrapping with `word-break: break-all` to ensure zero horizontal text clipping within the 340px popup container.
+- Applied dynamic classes to both initial render and in-place updates.
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+- `npm test`: 129 passed across all suites.
+Commits: fix(impeccable): dynamic scaling for high-precision currency and crypto values
+

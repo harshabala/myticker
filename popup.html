@@ -199,6 +199,7 @@
         align-items: baseline;
         gap: 10px;
         margin-bottom: 14px;
+        flex-wrap: wrap;
       }
       .pnl-value {
         font-size: 1.75rem;
@@ -206,6 +207,14 @@
         letter-spacing: -0.03em;
         line-height: 1.1;
         font-variant-numeric: tabular-nums;
+        max-width: 100%;
+        word-break: break-all;
+      }
+      .pnl-value.is-long {
+        font-size: 1.35rem;
+      }
+      .pnl-value.is-extra-long {
+        font-size: 1.15rem;
       }
       .pnl-pct {
         font-size: 0.875rem;

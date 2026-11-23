@@ -317,6 +317,11 @@ function topMovers(positions) {
     .slice(0, 3);
 }
 
+function pnlValueLengthClass(text) {
+  const len = typeof text === "string" ? text.length : 0;
+  return len > 14 ? " is-extra-long" : len > 9 ? " is-long" : "";
+}
+
 export function updatePnlInPlace(viewEl, state, watchlistItems) {
   if (activeTab === "watchlist") {
     renderActiveTab(viewEl, { state, watchlistItems, status: null });
@@ -333,7 +338,7 @@ export function updatePnlInPlace(viewEl, state, watchlistItems) {
   const livePill = viewEl.querySelector(".live-pill");
 
   if (pnlValue) {
-    pnlValue.className = `pnl-value ${dayDisplay.className}`;
+    pnlValue.className = `pnl-value ${dayDisplay.className}${pnlValueLengthClass(dayDisplay.value)}`;
     pnlValue.textContent = dayDisplay.value;
   }
   if (pnlPct) {
@@ -525,7 +530,7 @@ export function renderHoldingsPanel(container, state, status) {
   const pnlRow = document.createElement("div");
   pnlRow.className = "pnl-row";
   const pnlValue = document.createElement("span");
-  pnlValue.className = `pnl-value ${dayDisplay.className}`;
+  pnlValue.className = `pnl-value ${dayDisplay.className}${pnlValueLengthClass(dayDisplay.value)}`;
   pnlValue.textContent = dayDisplay.value;
   const pnlPct = document.createElement("span");
   pnlPct.className = `pnl-pct ${dayDisplay.className}`;
