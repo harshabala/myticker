@@ -99,15 +99,15 @@
     --border-focus: rgba(66, 86, 110, 0.75);
 
     --text-primary: #1d1d1f;
-    --text-secondary: #6e6e73;
-    --text-tertiary: #6e6e73;
+    --text-secondary: #58585c;
+    --text-tertiary: #58585c;
 
     --accent: #42566e;
     --accent-hover: #34485f;
     --accent-pressed: #2a3d52;
     --accent-muted: rgba(66, 86, 110, 0.12);
     --accent-ink: #ffffff;
-    --brand-gold: #9b6500;
+    --brand-gold: #825600;
     --brand-gold-hover: #875b00;
     --brand-gold-ink: #ffffff;
     --brand-gold-muted: rgba(165, 111, 0, 0.14);
@@ -193,7 +193,7 @@ html[data-theme="light"] {
   --accent-hover: #34485f;
   --accent-pressed: #2a3d52;
   --accent-ink: #ffffff;
-  --brand-gold: #9b6500;
+  --brand-gold: #825600;
   --brand-gold-hover: #875b00;
   --brand-gold-ink: #ffffff;
   --brand-gold-muted: rgba(165, 111, 0, 0.14);

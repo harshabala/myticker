@@ -91,3 +91,14 @@ Verified:
 - `npm test`: 129 passed across all suites.
 Commits: fix(impeccable): clamp minimum ticker text size to 11.5px floor
 
+## 2026-11-23 (Follow-up), Antigravity (Gemini 3.8 Flash)
+Workstream: Impeccable Audit Fixes
+Finding: Tier 2 - Light Mode Secondary Text & Gold Token Contrast (brand.css:102-103,110,196)
+Done:
+- Updated light mode `--text-secondary` and `--text-tertiary` to `#58585c` (achieving 5.2:1 contrast against light surface, exceeding the 4.5:1 WCAG AA threshold).
+- Updated light mode `--brand-gold` to `#825600` (achieving 4.8:1 contrast, resolving the previous 3.4:1 contrast failure).
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+- `npm test`: 129 passed across all suites.
+Commits: fix(impeccable): update light mode text-secondary and brand-gold tokens for WCAG AA
+
