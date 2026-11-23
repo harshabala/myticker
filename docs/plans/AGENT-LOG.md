@@ -102,3 +102,14 @@ Verified:
 - `npm test`: 129 passed across all suites.
 Commits: fix(impeccable): update light mode text-secondary and brand-gold tokens for WCAG AA
 
+## 2026-11-23 (Follow-up), Antigravity (Gemini 3.8 Flash)
+Workstream: Impeccable Audit Fixes
+Finding: Tier 2 - Color Token Normalization in ticker.css (ticker.css:54,60,115,128,164,170,202,225)
+Done:
+- Mapped raw hex and rgba literal values to semantic CSS custom properties (`--brand-gold`, `--gain`, `--loss`, `--pts-bg`, `--pts-hairline`, `--pts-border`, `--pts-hover`, `--accent`).
+- Added token definitions in `:host, :root` and `@media (prefers-color-scheme: light)` for shadow DOM tape isolation.
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+- `npm test`: 129 passed across all suites.
+Commits: fix(impeccable): map raw hex colors in ticker.css to semantic custom properties
+
