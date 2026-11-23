@@ -383,6 +383,27 @@ function renderSetupChecklist(container, status) {
   const card = document.createElement("div");
   card.className = "setup-checklist";
 
+  const preview = document.createElement("div");
+  preview.className = "ambient-tape-preview";
+  preview.setAttribute("aria-hidden", "true");
+  preview.innerHTML = `
+    <div class="preview-browser-head">
+      <span class="preview-dot"></span>
+      <span class="preview-dot"></span>
+      <span class="preview-dot"></span>
+    </div>
+    <div class="preview-strip-row">
+      <span class="preview-strip-badge">Ambient Tape</span>
+      <span class="preview-strip-item">AAPL <strong>$224.50</strong> <span class="pnl-positive">+1.2%</span></span>
+      <span class="preview-strip-item">NIFTY <strong>24,180</strong> <span class="pnl-positive">+0.6%</span></span>
+    </div>
+    <div class="preview-page-body">
+      <div class="preview-page-line" style="width: 55%;"></div>
+      <div class="preview-page-line" style="width: 80%;"></div>
+    </div>
+  `;
+  card.appendChild(preview);
+
   const title = document.createElement("div");
   title.className = "label";
   title.textContent = status.hasHoldings ? "Almost there" : "Get started";

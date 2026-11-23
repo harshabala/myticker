@@ -436,6 +436,62 @@
         font-family: inherit;
         min-height: 44px;
       }
+      .ambient-tape-preview {
+        margin-bottom: 14px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm, 8px);
+        overflow: hidden;
+      }
+      .preview-browser-head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: var(--bg-hover);
+        border-bottom: 1px solid var(--border);
+      }
+      .preview-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-tertiary);
+        opacity: 0.5;
+      }
+      .preview-strip-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        background: var(--pts-bg, #0c0c0d);
+        color: var(--pts-fg, #f5f5f7);
+        font-size: 11px;
+        border-bottom: 1px solid var(--border);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      }
+      .preview-strip-badge {
+        font-weight: 700;
+        font-size: 9px;
+        letter-spacing: 0.05em;
+        color: var(--brand-gold);
+        text-transform: uppercase;
+      }
+      .preview-strip-item {
+        font-variant-numeric: tabular-nums;
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .preview-page-body {
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .preview-page-line {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--bg-hover);
+      }
       button.checklist-item { cursor: pointer; border-radius: 8px; }
       button.checklist-item:hover { background: var(--bg-hover); }
       button.checklist-item:focus-visible {
