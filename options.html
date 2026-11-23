@@ -2741,10 +2741,10 @@
           <summary><span class="summary-label"><svg class="ui-icon" aria-hidden="true"><use href="icons/phosphor-symbols.svg#ph-globe"></use></svg>Hidden sites</span></summary>
           <div class="settings-disclosure-body">
             <div class="field excluded-sites-field">
-              <label class="field-label" for="excludedSiteInput">Hide Ticker Tape on these sites</label>
+              <label class="field-label" for="excludedSiteInput">Hide Ticker Tape on specific domains</label>
               <p class="field-hint" id="excludedSitesHelp">
-                Add domains where the tape should never show (for example <code>youtube.com</code> or <code>chatgpt.com</code>).
-                Subdomains match automatically. The popup still works everywhere.
+                Add domains where the ambient tape should never show (for example <code>youtube.com</code> or <code>chatgpt.com</code>).
+                Exclusions apply permanently across sessions to the domain and all of its subdomains (e.g. <code>*.youtube.com</code>). The popup scoreboard remains available everywhere.
               </p>
               <div class="excluded-sites-add">
                 <input type="text" id="excludedSiteInput" autocomplete="off" placeholder="youtube.com" aria-describedby="excludedSitesHelp" />

@@ -765,8 +765,11 @@ async function initSiteActions() {
     const { excluded } = await readExcluded();
     const hidden = excluded.includes(hostKey);
     hideButton.textContent = hidden ? "Show on this site" : "Hide on this site";
+    hideButton.title = hidden
+      ? `Re-enable ticker tape on ${hostKey} and all its subdomains`
+      : `Hide ticker tape permanently on ${hostKey} and all its subdomains`;
     hideButton.dataset.hidden = hidden ? "1" : "0";
-    status.textContent = hidden ? `MyTicker is hidden on ${hostKey}.` : "";
+    status.textContent = hidden ? `MyTicker is hidden on ${hostKey} and its subdomains.` : "";
   };
   hideButton.disabled = false;
   reportButton.disabled = false;

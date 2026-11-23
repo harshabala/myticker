@@ -157,3 +157,13 @@ Verified:
 - `npm test`: 129 passed across all suites.
 Commits: fix(impeccable): normalize off-ramp border radii to design tokens
 
+## 2026-11-23 (Follow-up), Antigravity (Gemini 3.8 Flash)
+Workstream: Impeccable Audit Fixes
+Finding: Tier 3 - Domain Scope Clarification for Excluded Sites (options.html:2744, popup.html:625, popup.js:767)
+Done:
+- Updated help copy in `options.html` and tooltip / status text in `popup.js` / `popup.html` to clearly specify that exclusions apply permanently across sessions to the target domain and all its subdomains (e.g. `*.youtube.com`), while the popup scoreboard remains accessible everywhere.
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+- `npm test`: 129 passed across all suites.
+Commits: fix(impeccable): clarify domain scope and permanent duration of site exclusions
+
