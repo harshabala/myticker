@@ -80,3 +80,14 @@ Verified:
 Commits: dd3d49f
 Plan score: 9.5/10.
 
+## 2026-11-23, Antigravity (Gemini 3.8 Flash)
+Workstream: Impeccable Audit Fixes
+Finding: Tier 2 - Clamp Minimum Ticker Text Size (ticker.css:58,68,116,179,199)
+Done:
+- Clamped ticker tape font size using `font-size: max(11.5px, calc(11px * var(--pts-tape-scale)))` across `.pts-ticker-bar`, `.pts-stale-indicator`, `.pts-group-marker`, and `.pts-item-stale`.
+- Prevents compact tape mode (0.92 scale) from dropping sub-meta text to 10.12px, ensuring strict compliance with the 11.5px legibility floor.
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+- `npm test`: 129 passed across all suites.
+Commits: fix(impeccable): clamp minimum ticker text size to 11.5px floor
+

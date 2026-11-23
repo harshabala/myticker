@@ -55,7 +55,7 @@
   color: var(--pts-fg, #f5f5f7);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   font-synthesis: none;
-  font-size: calc(11px * var(--pts-tape-scale));
+  font-size: max(11.5px, calc(11px * var(--pts-tape-scale)));
   z-index: var(--pts-z-index-ticker) !important;
   box-shadow: inset 0 -0.5px 0 var(--pts-hairline, rgba(255, 255, 255, 0.08));
   -webkit-font-smoothing: antialiased;
@@ -113,7 +113,7 @@
   flex: 0 0 auto;
   padding: 0 calc(8px * var(--pts-tape-scale));
   color: var(--yellow, #ffd60a);
-  font-size: calc(11px * var(--pts-tape-scale));
+  font-size: max(11.5px, calc(11px * var(--pts-tape-scale)));
   font-weight: 600;
   cursor: help;
   /* Static amber — no infinite pulse (vestibular + ambient restraint) */
@@ -176,7 +176,7 @@
 
 .pts-group-marker {
   color: var(--pts-muted);
-  font-size: calc(11px * var(--pts-tape-scale));
+  font-size: max(11.5px, calc(11px * var(--pts-tape-scale)));
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -196,7 +196,7 @@
 
 .pts-price { color: var(--pts-fg); }
 .pts-personal-pnl { color: var(--pts-muted); }
-.pts-item-stale { color: var(--yellow); font-size: calc(11px * var(--pts-tape-scale)); font-weight: 600; }
+.pts-item-stale { color: var(--yellow); font-size: max(11.5px, calc(11px * var(--pts-tape-scale))); font-weight: 600; }
 
 .pts-up {
   color: var(--green, #30d158);
