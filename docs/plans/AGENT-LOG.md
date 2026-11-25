@@ -167,3 +167,12 @@ Verified:
 - `npm test`: 129 passed across all suites.
 Commits: fix(impeccable): clarify domain scope and permanent duration of site exclusions
 
+## 2026-11-25, Antigravity (Gemini)
+Workstream: UI/UX Pro Max Audit Remediation
+Done:
+- `options.html`: added `aria-label` attributes to `#brokerPreset`, `#csvFile`, `#vaultUnlockConfirm`, and `#cryptoCsvFile`.
+- `options.html`: expanded `@media (prefers-reduced-motion: reduce)` with `*, *::before, *::after` rules so all animated/transitioned elements respect reduced motion.
+- `options.html`: added `aria-live="polite"` to all 7 `.status-badge` spans (`#watchlistStatus`, `#csvStatus`, `#indiaStatus`, `#providerStatus`, `#cryptoImportStatus`, `#cryptoStatus`, `#appearanceStatus`).
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).
+

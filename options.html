@@ -1158,17 +1158,13 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .setup-welcome,
-        .warn-banner,
-        .toast,
-        .toast.toast-enter,
-        #cryptoManualField {
-          transition: none !important;
-          animation: none !important;
-        }
-
-        .toggle-slider::before {
-          transition: none !important;
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
         }
 
         .toast {
@@ -2373,7 +2369,7 @@
               <div class="field"><label class="field-label" for="watchlistInput">Ticker or crypto</label><input type="text" id="watchlistInput" autocomplete="off" placeholder="RELIANCE" /><div class="field-hint" id="watchlistHint">India symbols are normalized to the selected NSE/BSE suffix.</div></div>
               <div class="field-hint" id="watchlistError" role="alert" aria-live="polite"></div>
             </div>
-            <div class="btn-row form-action-row"><button class="btn btn-primary btn-pressable watchlist-action" id="addWatchlistButton">Add to watchlist</button><span class="status-badge" id="watchlistStatus"></span></div>
+            <div class="btn-row form-action-row"><button class="btn btn-primary btn-pressable watchlist-action" id="addWatchlistButton">Add to watchlist</button><span class="status-badge" id="watchlistStatus" aria-live="polite"></span></div>
             <div id="watchlistConfigured" class="configured-list field-hint"></div>
           </div>
         </div>
@@ -2428,7 +2424,7 @@
                 <div class="item-label">Broker preset</div>
                 <div class="item-desc">Match your CSV format if auto-detect misses</div>
               </div>
-              <select id="brokerPreset" class="select-inline">
+              <select id="brokerPreset" class="select-inline" aria-label="Broker preset">
                 <option value="zerodha" selected>Zerodha</option>
                 <option value="groww">Groww</option>
                 <option value="upstox">Upstox</option>
@@ -2443,7 +2439,7 @@
             </div>
             <div class="drop-text">Drop holdings CSV here to import</div>
             <div class="drop-hint">Recommended: Zerodha holdings export · also Groww, Upstox, generic</div>
-            <input type="file" id="csvFile" accept=".csv,text/csv" />
+            <input type="file" id="csvFile" accept=".csv,text/csv" aria-label="Choose holdings CSV file" />
           </div>
 
           <div class="btn-row">
@@ -2452,7 +2448,7 @@
               Add via Finder / File Explorer
             </button>
             <button type="button" class="btn btn-secondary btn-pressable" id="clearHoldingsButton">Clear all</button>
-            <span class="status-badge" id="csvStatus"></span>
+            <span class="status-badge" id="csvStatus" aria-live="polite"></span>
           </div>
 
           <div class="import-stats" id="importStats" hidden></div>
@@ -2508,7 +2504,7 @@
                 <svg class="ui-icon" aria-hidden="true"><use href="icons/phosphor-symbols.svg#ph-wifi-high"></use></svg>
                 Test connection
               </button>
-              <span class="status-badge" id="indiaStatus"></span>
+              <span class="status-badge" id="indiaStatus" aria-live="polite"></span>
             </div>
             <div class="provider-detail">
               <div class="field-hint" style="margin:0;">All .NS and .BO symbols from your broker CSV are fetched automatically after import.</div>
@@ -2552,7 +2548,7 @@
                   <label class="sr-only" for="vaultUnlockCode">Create unlock code</label>
                   <input type="password" id="vaultUnlockCode" minlength="6" maxlength="128" placeholder="Unlock code or passphrase (6+ characters)" autocomplete="new-password" aria-describedby="vaultCodeStrength" />
                   <div class="field-hint code-strength" id="vaultCodeStrength" data-level="empty" aria-live="polite">Use 12+ characters, or a few random words with spaces.</div>
-                  <input type="password" id="vaultUnlockConfirm" minlength="6" maxlength="128" placeholder="Confirm unlock code" autocomplete="new-password" style="margin-top: 8px;" />
+                  <input type="password" id="vaultUnlockConfirm" minlength="6" maxlength="128" placeholder="Confirm unlock code" autocomplete="new-password" aria-label="Confirm unlock code" style="margin-top: 8px;" />
                   <div class="field-hint" id="vaultStatus">No encrypted Finnhub key configured.</div>
                 </div>
                 <div class="btn-row">
@@ -2561,7 +2557,7 @@
                   <button class="btn btn-secondary btn-pressable" id="lockVaultButton">Lock key</button>
                   <button class="btn btn-secondary btn-pressable" id="replaceVaultButton">Replace key</button>
                   <button class="btn btn-secondary btn-pressable" id="testConnectionButton" disabled title="Save your API key first">Test connection</button>
-                  <span class="status-badge" id="providerStatus"></span>
+                  <span class="status-badge" id="providerStatus" aria-live="polite"></span>
                 </div>
                 <details class="provider-key-disclosure" id="section-change-unlock-code" hidden>
                   <summary class="provider-key-summary">Change unlock code</summary>
@@ -2673,14 +2669,14 @@
                   </div>
                   <div class="drop-text">Drop crypto CSV here to import</div>
                   <div class="drop-hint">Wallet / holdings export · symbol + quantity columns</div>
-                  <input type="file" id="cryptoCsvFile" accept=".csv,text/csv" />
+                  <input type="file" id="cryptoCsvFile" accept=".csv,text/csv" aria-label="Choose crypto holdings CSV file" />
                 </div>
                 <div class="btn-row crypto-import-actions">
                   <button type="button" class="btn btn-primary btn-pressable" id="cryptoImportCsvButton">
                     <svg class="ui-icon" aria-hidden="true"><use href="icons/phosphor-symbols.svg#ph-tray-arrow-down"></use></svg>
                     Add via Finder / File Explorer
                   </button>
-                  <span class="status-badge" id="cryptoImportStatus"></span>
+                  <span class="status-badge" id="cryptoImportStatus" aria-live="polite"></span>
                 </div>
               </div>
               <div class="field-hint crypto-selector-guidance">
@@ -2694,7 +2690,7 @@
           </div>
           <div class="btn-row form-action-row">
             <button class="btn btn-primary btn-pressable" id="saveCryptoButton">Save</button>
-            <span class="status-badge" id="cryptoStatus"></span>
+            <span class="status-badge" id="cryptoStatus" aria-live="polite"></span>
           </div>
         </div>
       </div>
@@ -2802,7 +2798,7 @@
         <div class="card" style="margin-top: 14px; overflow: hidden;">
           <div class="btn-row" style="padding: 18px 24px;">
             <button class="btn btn-primary btn-pressable" id="saveAppearanceButton">Save changes</button>
-            <span class="status-badge" id="appearanceStatus"></span>
+            <span class="status-badge" id="appearanceStatus" aria-live="polite"></span>
           </div>
         </div>
       </div>
