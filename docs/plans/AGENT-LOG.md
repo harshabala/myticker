@@ -176,3 +176,11 @@ Done:
 Verified:
 - `npm run lint`: clean (0 errors, 0 warnings).
 
+
+## 2026-11-27, Antigravity (Gemini)
+Workstream: UI/UX Pro Max Audit Remediation
+Done:
+- `contentScript.js` & `ticker.css`: replaced the `"⚠ Stale"` warning emoji in `.pts-stale-indicator` with an inline `aria-hidden="true"` SVG warning triangle icon + `"Stale"` label and flex alignment.
+- `options.html`: replaced hardcoded dark-only `rgba(255, 255, 255, ...)` values on `.btn-secondary`, `.btn-secondary:hover`, `.provider-badge.optional`, `.wizard-step.is-next`, `.preview-table td`, and `.error-log-entry` with theme-aware CSS variables (`var(--bg-inset)`, `var(--bg-hover)`, `var(--material-elevated-shadow)`, `var(--border)`).
+Verified:
+- `npm run lint`: clean (0 errors, 0 warnings).

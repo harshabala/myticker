@@ -122,6 +122,9 @@
 }
 
 .pts-stale-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   flex: 0 0 auto;
   padding: 0 calc(8px * var(--pts-tape-scale));
   color: var(--brand-gold, var(--yellow));

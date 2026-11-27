@@ -666,9 +666,33 @@ function updateStaleIndicator(container, parts, state) {
       parts.stale.setAttribute("role", "status");
       parts.stale.title =
         "Price data may be outdated – check your API key or network";
+      const svgNs = "http://www.w3.org/2000/svg";
+      const icon = document.createElementNS(svgNs, "svg");
+      icon.setAttribute("width", "12");
+      icon.setAttribute("height", "12");
+      icon.setAttribute("viewBox", "0 0 24 24");
+      icon.setAttribute("fill", "none");
+      icon.setAttribute("stroke", "currentColor");
+      icon.setAttribute("stroke-width", "2");
+      icon.setAttribute("stroke-linecap", "round");
+      icon.setAttribute("stroke-linejoin", "round");
+      icon.setAttribute("aria-hidden", "true");
+      const path = document.createElementNS(svgNs, "path");
+      path.setAttribute("d", "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z");
+      const line1 = document.createElementNS(svgNs, "line");
+      line1.setAttribute("x1", "12");
+      line1.setAttribute("y1", "9");
+      line1.setAttribute("x2", "12");
+      line1.setAttribute("y2", "13");
+      const line2 = document.createElementNS(svgNs, "line");
+      line2.setAttribute("x1", "12");
+      line2.setAttribute("y1", "17");
+      line2.setAttribute("x2", "12.01");
+      line2.setAttribute("y2", "17");
+      icon.append(path, line1, line2);
+      parts.stale.append(icon, document.createTextNode("Stale"));
       container.insertBefore(parts.stale, container.firstChild);
     }
-    parts.stale.textContent = "⚠ Stale";
   } else if (parts.stale) {
     parts.stale.remove();
     parts.stale = null;
